@@ -1,0 +1,38 @@
+schema_version = "1.0.0"
+
+# Example of manifest file for a Blender extension
+# Change the values according to your extension
+id = "stuntboost_bpl"
+version = "1.0.0"
+name = "STUNTBOOST Blender Plugin Loader"
+tagline = "TODO"
+maintainer = "TODO"
+type = "add-on"
+
+# Optional: add-ons can list which resources they will require:
+# * "files" (for access of any filesystem operations)
+# * "network" (for internet access)
+# * "clipboard" (to read and/or write the system clipboard)
+# * "camera" (to capture photos and videos)
+# * "microphone" (to capture audio)
+permissions = ["files","clipboard","network"]
+
+# Optional link to documentation, support, source files, etc
+website = "https://stuntboost.com/"
+
+blender_version_min = "4.3.0"
+
+# License conforming to https://spdx.org/licenses/ (use "SPDX: prefix)
+# https://docs.blender.org/manual/en/dev/extensions/licenses.html
+license = [
+  "SPDX:GPL-2.0-or-later",
+]
+
+platforms = ["windows-amd64", "macos-arm64", "linux-x86_64"]
+
+# Optional: bundle 3rd party Python modules.
+# https://docs.blender.org/manual/en/dev/extensions/python_wheels.html
+# wheels = [
+#   "./wheels/hexdump-3.3-py3-none-any.whl",
+#   "./wheels/jsmin-3.0.1-py3-none-any.whl"
+# ]
