@@ -1,3 +1,7 @@
+"""
+Uses the object name with "_mesh" appended as the mesh data block name.
+"""
+
 # pylint: disable=import-error
 import bpy
 # pylint: enable=import-error
@@ -20,6 +24,8 @@ class SBE_SyncMeshName(bpy.types.Operator):
             if hasattr(obj.data, "asset_data"):
                 if obj.data.asset_data is not None:
                     continue
+            if 1 < obj.data.users:
+                return # only rename single user meshes
             try:
                 obj.data.name = obj.name + "_mesh"
             except Exception as e:

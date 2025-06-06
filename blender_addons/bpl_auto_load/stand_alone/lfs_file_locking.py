@@ -1,7 +1,8 @@
 """
-TODO 
-The idea is to poll for read only files and show a popup so git lfs locking
-is visible from blender.
+Basic git lfs integration.
+Adds a new button in the top bar showing the LFS locking status and allows
+locking and unlocking of the current file as well a unlocking for all
+committed/unchanged files.
 """
 
 import sys

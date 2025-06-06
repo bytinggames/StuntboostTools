@@ -1,3 +1,8 @@
+"""
+Simply print the mesh name and vertex count by descending order to the console.
+"""
+
+
 # pylint: disable=import-error
 import bpy
 # pylint: enable=import-error

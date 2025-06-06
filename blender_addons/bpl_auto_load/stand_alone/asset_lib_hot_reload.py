@@ -1,3 +1,9 @@
+"""
+This addon periodically checks for any changes in the .blend files referenced as
+libraries in the current file to automatically reload them.
+"""
+
+
 import os
 
 # pylint: disable=import-error
