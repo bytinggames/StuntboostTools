@@ -16,7 +16,7 @@ This contains tools related to the game STUNBOOST which is currently in developm
 ### What plugins are there?
 Have a look at the folder `blender_addons/bpl_auto_load/`
 
-- [blender_addons/bpl_auto_load/standalone](blender_addons/bpl_auto_load/standalone) contains addons that function on their own and provide small features.
+- [blender_addons/bpl_auto_load/stand_alone](blender_addons/bpl_auto_load/stand_alone) contains addons that function on their own and provide small features.
 - [blender_addons/bpl_auto_load/level_editor](.) Maybe one day? 😳
 
 
@@ -24,7 +24,7 @@ Have a look at the folder `blender_addons/bpl_auto_load/`
 To allow hot reloading the addons directly out of the git repository, they are loaded via a meta loader addon.
 Maybe one day we'll get around to using the new extension format, and even host the addons via a custom extensions repository.
 
-Have a look at [the readme for it here.](blender_addons/loader_addon/README.md)
+Have a look at [the readme for it here.](blender_addons/loader_addon/)
 
 
 ### Debugging
