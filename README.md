@@ -4,10 +4,11 @@ This contains tools related to the game STUNBOOST which is currently in developm
 
 
 ## Blender Addons
-
-- Install this addon the legacy way: `blender_addons/loader_addon/stuntboost_bpl.py`
+- Clone this repo, or get the zip AND UNPACK IT anywhere. Remember that path.
+- Install this addon the legacy way:
 - ![alt text](docs/legacy_addon.png)
-- Configure the addon to point to this repository.
+- In the install dialog install this file: `blender_addons/loader_addon/stuntboost_bpl.py`
+- Configure the addon to point to this repository or wherever you unpacked the zip.
 - ![alt text](docs/addon_repo.png)
 - Restart Blender
 - Enjoy
