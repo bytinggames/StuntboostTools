@@ -1,0 +1,74 @@
+# 01 - Setup
+
+## Getting Blender
+- We're using a modified blender version based on 4.3.2 (which is old I know)
+    - The [FAQ](./faq.md) has a section about what it does.
+
+
+### Windows
+- Download the preconfigured portable version
+- [Blender]()TODO Link
+- Unpack somewhere
+    - Please don't put it 1000 folders deep somewhere, windows doesn't like long paths :(
+- Run the blender.exe inside
+- Continue with [Configuring Blender](#configuring-blender)
+
+
+### Linux
+Providing a prebuilt version isn't really as easy, so there are several options.
+- Build the custom version from source [Source Code](https://projects.blender.org/Tobiasked/blender/src/branch/bake_experiments_4_3/)
+    - Tested on arch, all bets are off with other distros
+    - System dependencies also mean this will break constantly
+- Use the normal Blender 4.3.x versions if you can get them to work on your distro
+    - The version is pretty old so most distros might not provide it any more
+- Use even newer versions provided by your distro
+    - This might break the exporter when the blender API changes
+- Continue with [Export Addon Installation](#export-addon-installation)
+
+
+## Export Addon Installation
+
+The bootstrap resolves paths relative to the Blender executable.
+
+```text
+blender/
+  blender(.exe)
+  game/                             junction on Windows, symlink on Linux
+    ModTools
+      blender_addons/
+        stuntboost_bpl_runtime.py
+        loader_addon/stuntboost_bpl.py
+        bpl_auto_load/
+      assets                        Contains asset lib files, TODO automaticcally setup libs, TODO copy them here from internal assets?
+        Props
+        Skybox
+        RoomShared
+        RoomProtag
+        Stickers
+      examples                      TODO example level will live here, copy new levels from these TODO they live in repo?
+  levels                            Put your level source blend files in here to avoid issues with relative paths!
+```
+
+- Fire up your locally sourced blender (Up to 5.2 should work)
+- Go to `Edit` > `Prefernces` > `Add-ons`
+- Click Small down arrow in the top right
+- Click `Install from disk...`
+- Navigate to your game folder > `ModTools` > `blender_addons` > `loader_addon` > `stuntboost_bpl.py`
+- Enable `STUNTBOOST Blender Plugin Loader`.
+
+
+## Configuring Blender
+- Expand `STUNTBOOST Blender Plugin Loader` in `Edit` > `Preferences` > `Add-ons`.
+- Click `Choose STUNTBOOST Game Folder` and select the game installation.
+    - Creates a junction on Windows without requiring administrator privileges or Developer Mode; Linux uses a symlink.
+    - The Blender installation folder must be writable. Existing links can be updated; real directories are never replaced.
+- If the top menu bar does not show `STUNTBOOST`, check the loader's preferences for an error and confirm the selected game includes the runtime and plugins.
+- Go to `Edit` > `Prefernces` > `System`
+- Ensure the `Cycles Render Devices` is not set to `None`
+    - For AMD choose `HIP`
+    - For Nvidia try `Optix`
+        - If your GPU isn't listed below, choose `CUDA`
+    - Intel ARC GPUs use `oneAPI`
+    - If your GPU isn't listed under none of the options, you'll have to live with `None`
+        - This will bake on the CPU which is about 10x slower but it should still work.
+- Setup is all done :)

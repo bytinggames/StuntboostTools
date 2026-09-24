@@ -28,7 +28,7 @@ license = [
   "SPDX:GPL-2.0-or-later",
 ]
 
-platforms = ["windows-amd64", "macos-arm64", "linux-x86_64"]
+platforms = ["windows-x64", "macos-arm64", "linux-x86_64"]
 
 # Optional: bundle 3rd party Python modules.
 # https://docs.blender.org/manual/en/dev/extensions/python_wheels.html

@@ -1,39 +1,32 @@
 # STUNTBOOST Tools & Friends
 
-This contains tools related to the game STUNBOOST which is currently in development.
+This contains modding tools for the game [STUNBOOST](https://store.steampowered.com/app/2999500/STUNTBOOST/)
+
+## Requirements
+- Some patience and/or familiarity with Blender
+    - Blender is not a easy level editor, but a giant 3D Modelling animation Tool!
+    - There is a bit of a learning curve, but we're trying our best to make it straight forward.
+- A decent computer with a supported GPU
+  - This depends on how complex the levels are, and how close the original game look should be matched.
+- The Full Game downloaded
+
+## Getting Started
+- [Setup](./docs/01-setup.md)
+- [Export a example level](./docs/02-test-export.md)
+- [Basics](./docs/03-basics.md)
+- [Advanced](./docs/04-advanced.md)
+
+## FAQ
+
+## Troubleshooting
+Having issues? Checkout or ever expanding list of common pitfals and erros:
+[Common Issues]()
+
+Still having problems?
+- (Join or Discord community)[https://discord.gg/stuntboost] (I know discord is bad for search engines and public discourse)
+- (Open a issue on github)[https://github.com/bytinggames/StuntboostTools/issues] (If you're sure it's a bug)
 
 
-## Blender Addons
-- Clone this repo, or get the zip AND UNPACK IT anywhere. Remember that path.
-- Install this addon the legacy way:
-- ![alt text](docs/legacy_addon.png)
-- In the install dialog install this file: `blender_addons/loader_addon/stuntboost_bpl.py`
-- Configure the addon to point to this repository or wherever you unpacked the zip.
-- ![alt text](docs/addon_repo.png)
-- Restart Blender
-- Enjoy
-
-
-### What plugins are there?
-Have a look at the folder `blender_addons/bpl_auto_load/`
-
-- [blender_addons/bpl_auto_load/stand_alone](blender_addons/bpl_auto_load/stand_alone) contains addons that function on their own and provide small features.
-- [blender_addons/bpl_auto_load/level_editor](.) Maybe one day? 😳
-
-
-### Meta loader addon?
-To allow hot reloading the addons directly out of the git repository, they are loaded via a meta loader addon.
-Maybe one day we'll get around to using the new extension format, and even host the addons via a custom extensions repository.
-
-Have a look at [the readme for it here.](blender_addons/loader_addon/)
-
-
-### Debugging
-Error handling is mostly non existent, so check the system console for any errors.
-
-
-### Disclaimer
-This is in-house tooling only tested by us so far. Have fun lol
-
-
-### More stuff to come as the game progresses!
+## Contributing
+- Small fixes are welcome
+- Let us know before implementing large features. We might not be able to merge those without breaking our iternal tooling, which also relies on this repo.

@@ -1,0 +1,3 @@
+@echo off
+blender -b -P "./sbe_cli_bake.py" -- -p "../../../../SE/Content/Models/Mod/Level_Mod.blend" --setting "RELEASE" -y
+set /p DUMMY=Hit ENTER to continue...
