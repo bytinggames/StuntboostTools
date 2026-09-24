@@ -1,4 +1,5 @@
 import importlib.util
+import os
 from pathlib import Path
 import stat
 import sys
@@ -20,12 +21,41 @@ _load_error = ""
 _RUNTIME_FILE = Path("blender_addons") / "stuntboost_bpl_runtime.py"
 
 
+def has_game_tools(path):
+    tools = path / "StuntboostTools" / "blender_addons"
+    return (tools / _RUNTIME_FILE.name).is_file() and (tools / "bpl_auto_load").is_dir()
+
+
+def find_game_path():
+    if sys.platform == "win32":
+        steam_roots = (
+            Path("C:/Program Files (x86)/Steam"),
+            Path("C:/Program Files/Steam"),
+        )
+    else:
+        steam = Path.home() / ".steam"
+        steam_roots = (steam / "steam", steam / "root", steam)
+    for steam in steam_roots:
+        game = steam / "steamapps" / "common" / "STUNTBOOST"
+        if has_game_tools(game):
+            return game
+    return None
+
+
 def load_runtime():
     global _runtime, _load_error
     root = Path(bpy.app.binary_path).parent
+    if not any(os.path.lexists(root / name) for name in ("game", "repo")):
+        try:
+            game = find_game_path()
+            if game is not None:
+                set_game_path(game)
+        except (OSError, ValueError) as exc:
+            _load_error = f"Automatic game setup failed: {exc}. Ensure the Blender folder is writable."
+            return
     path = next((path for path in (
-        root / "game" / "ModTools" / _RUNTIME_FILE,
-        root / "repo" / _RUNTIME_FILE,
+        root / "game" / "StuntboostTools" / _RUNTIME_FILE,
+        root / "repo" / "StuntboostTools" / _RUNTIME_FILE,
     ) if path.is_file()), None)
     if path is None:
         _load_error = "Tools not found. Choose the STUNTBOOST game folder below."
@@ -55,8 +85,36 @@ def is_directory_link(path):
     )
 
 
+def set_game_path(target):
+    link = Path(bpy.app.binary_path).parent / "game"
+    target = target.resolve(strict=True)
+    if not has_game_tools(target):
+        raise ValueError("Choose a game folder containing StuntboostTools/blender_addons and its runtime and plugins.")
+    if link.resolve() != target:
+        if link.exists() and not is_directory_link(link):
+            raise ValueError(f"Refusing to replace an existing file or directory: {link}")
+        # Test permission errors first
+        with tempfile.TemporaryDirectory(prefix=".stuntboost-link-", dir=link.parent) as temporary:
+            replacement = Path(temporary) / "game"
+            if sys.platform == "win32":
+                import _winapi
+                _winapi.CreateJunction(str(target), str(replacement))
+            else:
+                replacement.symlink_to(target, target_is_directory=True)
+            # Windows cannot replace a directory link directly.
+            previous = Path(temporary) / "previous"
+            if is_directory_link(link):
+                link.rename(previous)
+            try:
+                replacement.rename(link)
+            except OSError:
+                if is_directory_link(previous):
+                    previous.rename(link)
+                raise
+
+
 class BPL_SetGamePath(bpy.types.Operator):
-    """Create or update the game directory link beside Blender; restart to load its tools"""
+    """Link the game and load its tools immediately on first-time setup"""
     bl_idname = "wm.bpl_set_game_path"
     bl_label = "Choose STUNTBOOST Game Folder"
 
@@ -67,35 +125,10 @@ class BPL_SetGamePath(bpy.types.Operator):
         return {'RUNNING_MODAL'}
 
     def execute(self, _context):
-        link = Path(bpy.app.binary_path).parent / "game"
         try:
             if not self.directory:
                 raise ValueError("Choose the STUNTBOOST installation folder.")
-            target = Path(bpy.path.abspath(self.directory)).resolve(strict=True)
-            tools = target / "ModTools" / "blender_addons"
-            if not (tools / _RUNTIME_FILE.name).is_file() or not (tools / "bpl_auto_load").is_dir():
-                raise ValueError("Choose a game folder containing ModTools/blender_addons and its runtime and plugins.")
-            if link.resolve() != target:
-                if link.exists() and not is_directory_link(link):
-                    raise ValueError(f"Refusing to replace an existing file or directory: {link}")
-                # Create first so a permissions failure leaves the existing link intact.
-                with tempfile.TemporaryDirectory(prefix=".stuntboost-link-", dir=link.parent) as temporary:
-                    replacement = Path(temporary) / "game"
-                    if sys.platform == "win32":
-                        import _winapi
-                        _winapi.CreateJunction(str(target), str(replacement))
-                    else:
-                        replacement.symlink_to(target, target_is_directory=True)
-                    # Windows cannot replace a directory link directly.
-                    previous = Path(temporary) / "previous"
-                    if is_directory_link(link):
-                        link.rename(previous)
-                    try:
-                        replacement.rename(link)
-                    except OSError:
-                        if is_directory_link(previous):
-                            previous.rename(link)
-                        raise
+            set_game_path(Path(bpy.path.abspath(self.directory)))
         except (OSError, ValueError) as exc:
             if isinstance(exc, PermissionError):
                 message = f"Cannot write beside Blender. Use a writable Blender installation folder. {exc}"
@@ -103,7 +136,17 @@ class BPL_SetGamePath(bpy.types.Operator):
                 message = str(exc)
             self.report({'ERROR'}, message)
             return {'CANCELLED'}
-        self.report({'INFO'}, "Game folder linked. Restart Blender to load its tools.")
+        if _runtime is None:
+            load_runtime()
+            if _runtime is None:
+                self.report({'ERROR'}, _load_error)
+                return {'CANCELLED'}
+            for window in _context.window_manager.windows:
+                for area in window.screen.areas:
+                    area.tag_redraw()
+            self.report({'INFO'}, "Game folder linked. STUNTBOOST tools loaded.")
+        else:
+            self.report({'INFO'}, "Game folder linked. Restart Blender to switch tools.")
         return {'FINISHED'}
 
 
@@ -132,7 +175,10 @@ class BPL_Preferences(bpy.types.AddonPreferences):
             layout.label(text=_load_error, icon='ERROR')
         layout.label(text=f"Game: {(Path(bpy.app.binary_path).parent / 'game').resolve()}")
         layout.operator(BPL_SetGamePath.bl_idname, icon='FILE_FOLDER')
-        layout.label(text="Restart Blender after changing the game folder.")
+        if _runtime is None:
+            layout.label(text="Tools load immediately after first-time setup.")
+        else:
+            layout.label(text="Restart Blender to switch to a different game folder.")
         layout.prop(self, "watch_python_files")
         if _runtime is not None:
             layout.separator()

@@ -1,6 +1,8 @@
 # Trouble Shooting
 ## Help us gather info on the problem
-- TODO
+- Explain how to open/analyze `.export.blend` in `%APPDATA%\STUNTBOOST\build_blends`
+- `%APPDATA%\STUNTBOOST\build_logs` / `~/.config/STUNTBOOST` 
+- explain step by step debugging
 
 ## Pitfalls
 - TODO

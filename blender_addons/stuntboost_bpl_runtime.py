@@ -41,6 +41,7 @@ class ModuleManager:
     def __init__(self, folder: str, interval_seconds: float):
         self.interval_seconds = interval_seconds
         self.folder = folder
+        self._check_timer = self.__check
 
     def __get_files(self) -> list[str]:
         pattern_ignore = os.path.join(self.folder, "**", ".bplignore")
@@ -171,13 +172,13 @@ class ModuleManager:
         self.set_file_watching(watch_files)
 
     def set_file_watching(self, enabled: bool) -> None:
-        registered = bpy.app.timers.is_registered(self.__check)
+        registered = bpy.app.timers.is_registered(self._check_timer)
         if enabled and not bpy.app.background:
             if not registered:
                 bpy.app.timers.register(
-                    function=self.__check, first_interval=self.interval_seconds, persistent=True)
+                    function=self._check_timer, first_interval=self.interval_seconds, persistent=True)
         elif registered:
-            bpy.app.timers.unregister(self.__check)
+            bpy.app.timers.unregister(self._check_timer)
 
     def unload_all(self) -> None:
         for module, _loader in self.modules.copy().items():

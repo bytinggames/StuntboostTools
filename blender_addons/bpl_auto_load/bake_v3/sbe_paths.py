@@ -16,11 +16,30 @@ def ensure_folder(path: str) -> None:
     """Recursively create folders for a given path"""
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
-EXPORT_FOLDER = os.path.join(get_repo_folder(), "SE/Content/Models/Export")
-"""Gltfs will land here"""
+EXPORT_CUSTOM_MAPS = os.path.isdir(stuntboost_bpl_runtime.get_game_path())
+"""When the game folder exists, we're doing custom level exports."""
 
-TEXTURE_FOLDER = os.path.join(get_repo_folder(), "SE/Content/Models/Resources")
-"""Bake maps will land here"""
+if EXPORT_CUSTOM_MAPS:
+    if os.name == "nt":
+        _app_data = os.environ["APPDATA"]
+    else:
+        _app_data = os.environ.get("XDG_CONFIG_HOME") or str(pathlib.Path.home() / ".config")
+    _game_app_data = os.path.join(_app_data, "STUNTBOOST")
+    _custom_maps_folder = os.path.join(_game_app_data, "custom_maps")
+
+
+def get_export_folder(level_name: str) -> str:
+    """Return full folder path where level should be saved to."""
+    if EXPORT_CUSTOM_MAPS:
+        return os.path.join(_custom_maps_folder, level_name)
+    return os.path.join(get_repo_folder(), "SE/Content/Models/Export")
+
+
+def get_texture_folder(level_name: str) -> str:
+    """Return foll folder path wehere level textures should be saved to."""
+    if EXPORT_CUSTOM_MAPS:
+        return os.path.join(get_export_folder(level_name), "textures")
+    return os.path.join(get_repo_folder(), "SE/Content/Models/Resources", level_name + ".export")
 
 POSTPRO_BLEND_PATH = os.path.join(get_repo_folder(), "SE/Content/Models/Props/PostProcessing.blend")
 """File used to append post processing node tree"""
@@ -28,10 +47,16 @@ POSTPRO_BLEND_PATH = os.path.join(get_repo_folder(), "SE/Content/Models/Props/Po
 PROPS_BLEND_PATH = os.path.join(get_repo_folder(), "SE/Content/Models/Props/Props.blend")
 """File used to append post processing node tree"""
 
-EXPORT_BLEND_FOLDER = os.path.join(get_repo_folder(), "SE/Content/Models/build_blends")
+EXPORT_BLEND_FOLDER = (
+    os.path.join(_game_app_data, "build_blends") if EXPORT_CUSTOM_MAPS
+    else os.path.join(get_repo_folder(), "SE/Content/Models/build_blends")
+)
 """.export blends will be saved here"""
 
-LOG_FOLDER = os.path.join(get_repo_folder(), "SE/Content/Models/build_logs")
+LOG_FOLDER = (
+    os.path.join(_game_app_data, "build_logs") if EXPORT_CUSTOM_MAPS
+    else os.path.join(get_repo_folder(), "SE/Content/Models/build_logs")
+)
 """Logfiles from bakes are saved here"""
 
 # Node Group names
@@ -44,19 +69,3 @@ NODE_GROUP_IS_RELEASE_BAKE='IsReleaseBake'
 
 NODE_GROUP_IS_PREVIEW='IsPreview'
 """True when not in bake process"""
-
-# does Export folder exist?
-if not os.path.isdir(EXPORT_FOLDER):
-    game_path = stuntboost_bpl_runtime.get_game_path()
-
-    if os.path.isdir(game_path):
-
-        output_mod = os.path.join(game_path, "ContentMod")
-
-        EXPORT_FOLDER = os.path.join(output_mod, "Models/Export")
-        TEXTURE_FOLDER = os.path.join(output_mod, "Models/Resources")
-
-        if not os.path.exists(EXPORT_FOLDER):
-            os.makedirs(EXPORT_FOLDER)
-        if not os.path.exists(TEXTURE_FOLDER):
-            os.makedirs(TEXTURE_FOLDER)

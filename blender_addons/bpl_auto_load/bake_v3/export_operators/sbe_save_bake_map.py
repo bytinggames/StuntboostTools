@@ -13,7 +13,7 @@ from bake_v3.sbe_operator_ids import SBE_OP_SAVE_BAKE_MAP
 from bake_v3.sbe_custom_properties import (
     SBE_IMG_BAKE_DIRECT_PROP, SBE_IMG_BAKE_COMBINED_PROP,
 )
-from bake_v3.sbe_paths import TEXTURE_FOLDER
+from bake_v3.sbe_paths import get_texture_folder
 
 COMPRESSION = 15 # too much is slow, this compresses ok
 CHANNELS_RGBA = 'RGBA'
@@ -35,9 +35,7 @@ COLOR_MANAGEMENT = 'FOLLOW_SCENE' # 'OVERRIDE'
 LINEAR_COLORSPACE_SETTINGS = 'sRGB'
 
 def get_output_bake_map_directory() -> str:
-    root = bpy.path.abspath(TEXTURE_FOLDER)
-    level_folder = get_filename_without_extension() + ".export"
-    return os.path.join(root, level_folder)
+    return get_texture_folder(get_filename_without_extension())
 
 
 def get_output_bake_map_name(index: int, direct: bool, denoised: bool) -> str:

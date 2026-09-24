@@ -9,3 +9,12 @@
 - Checkpoint
 - Start
 - Finish
+
+## Meta Data
+- <level-name>_.json
+  - `id` (UUID),
+  - `version`,
+  - `name`,
+  - `author`, 
+  - `preview` (png),
+  - `medalTimesSeconds` (`silver`, `gold`, `diamond`, `obsidian`, `developer`)

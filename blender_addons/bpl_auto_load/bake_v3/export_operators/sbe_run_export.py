@@ -12,7 +12,7 @@ from bake_v3.sbe_logger import SBE_Logger
 from bake_v3.sbe_util import get_filename_without_extension
 from bake_v3.sbe_export_operator_base import SBE_ExportOperatorBase, SBE_Operator_Start_Result
 from bake_v3.sbe_collection_util import get_all_bake_collections, get_bake_collections
-from bake_v3.sbe_paths import EXPORT_FOLDER
+from bake_v3.sbe_paths import EXPORT_CUSTOM_MAPS, ensure_folder, get_export_folder
 
 class SBE_ExportLevel(SBE_ExportOperatorBase):
     """Export the level to .gltf"""
@@ -26,8 +26,9 @@ class SBE_ExportLevel(SBE_ExportOperatorBase):
             return
         bpy.ops.wm.save_as_mainfile()
 
-        export_folder = bpy.path.abspath(EXPORT_FOLDER)
         blend_name = get_filename_without_extension()
+        export_folder = bpy.path.abspath(get_export_folder(blend_name))
+        ensure_folder(export_folder)
 
         bake_collections = get_bake_collections(context)
         all_bake_collections = get_all_bake_collections()
@@ -62,7 +63,8 @@ class SBE_ExportLevel(SBE_ExportOperatorBase):
                 export_apply=True, # apply modifiers
                 will_save_settings=False,
                 export_cameras=True, # for exporting PreviewCameras
-                export_keep_originals=True,
+                export_keep_originals=not EXPORT_CUSTOM_MAPS,
+                export_texture_dir="textures" if EXPORT_CUSTOM_MAPS else "",
                 export_materials='EXPORT',
                 export_image_format='AUTO',
                 export_force_sampling=True,

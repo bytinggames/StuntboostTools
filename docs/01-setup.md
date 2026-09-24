@@ -28,18 +28,24 @@ Providing a prebuilt version isn't really as easy, so there are several options.
 
 ## Export Addon Installation
 
-The bootstrap resolves paths relative to the Blender executable.
+
+- Fire up your locally sourced blender (Up to 5.2 should work)
+- Go to `Edit` > `Prefernces` > `Add-ons`
+- Click Small down arrow in the top right
+- Click `Install from disk...`
+- Navigate to your game folder > `StuntboostTools` > `blender_addons` > `loader_addon` > `stuntboost_bpl.py`
+- Enable `STUNTBOOST Blender Plugin Loader`.
 
 ```text
 blender/
   blender(.exe)
-  game/                             junction on Windows, symlink on Linux
-    ModTools
+  game/                                 junction on Windows, symlink on Linux, can be setup from the addon
+    StuntboostTools
       blender_addons/
-        stuntboost_bpl_runtime.py
-        loader_addon/stuntboost_bpl.py
+        loader_addon/stuntboost_bpl.py  This needs to be installed into blender
+        stuntboost_bpl_runtime.py       This will be loaded by stuntboost_bpl.py and contains most of the loading logic
         bpl_auto_load/
-      assets                        Contains asset lib files, TODO automaticcally setup libs, TODO copy them here from internal assets?
+      assets                            Contains asset lib files, TODO automaticcally setup libs, TODO copy them here from internal assets?
         Props
         Skybox
         RoomShared
@@ -49,19 +55,10 @@ blender/
   levels                            Put your level source blend files in here to avoid issues with relative paths!
 ```
 
-- Fire up your locally sourced blender (Up to 5.2 should work)
-- Go to `Edit` > `Prefernces` > `Add-ons`
-- Click Small down arrow in the top right
-- Click `Install from disk...`
-- Navigate to your game folder > `ModTools` > `blender_addons` > `loader_addon` > `stuntboost_bpl.py`
-- Enable `STUNTBOOST Blender Plugin Loader`.
-
 
 ## Configuring Blender
 - Expand `STUNTBOOST Blender Plugin Loader` in `Edit` > `Preferences` > `Add-ons`.
-- Click `Choose STUNTBOOST Game Folder` and select the game installation.
-    - Creates a junction on Windows without requiring administrator privileges or Developer Mode; Linux uses a symlink.
-    - The Blender installation folder must be writable. Existing links can be updated; real directories are never replaced.
+- If automatic discovery did not find the game, click `Choose STUNTBOOST Game Folder` and select the game installation.
 - If the top menu bar does not show `STUNTBOOST`, check the loader's preferences for an error and confirm the selected game includes the runtime and plugins.
 - Go to `Edit` > `Prefernces` > `System`
 - Ensure the `Cycles Render Devices` is not set to `None`
