@@ -39,6 +39,11 @@ class SBE_SkipGroups(SBE_ExportOperatorBase):
     keep_selection = True
 
     def execute_internal(self, context: bpy.types.Context, start: SBE_Operator_Start_Result):
+        if len(context.scene.collection.children) == 1:
+            col: bpy.types.Collection = context.scene.collection.children[0]
+            props: SBE_CollectionProperties = SBE_CollectionProperties.get(col)
+            props.is_bake_group = True
+
         if retrieve_temp(SBE_TEMP_NO_SKIP_BAKE_PROP) is True:
             # No skip logic on cli bakes at all
             return

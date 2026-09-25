@@ -5,6 +5,7 @@ these are defined here and called from new "meta ops"
 """
 
 import os
+import sys
 import subprocess
 import datetime
 
@@ -26,6 +27,23 @@ from bake_v3.sbe_logger import SBE_Logger
 from bake_v3.sbe_util import execute_by_idname, store_temp, ensure_saved_as_bake_blend
 from bake_v3.properties.sbe_blend_props import SBE_BlendProperties
 from bake_v3.sbe_sound import error_sound
+
+def ensure_system_console():
+    """Show the Windows console without hiding an already visible console."""
+    if sys.platform != "win32" or bpy.app.background:
+        return
+
+    import ctypes
+    from ctypes import wintypes
+
+    get_console_window = ctypes.windll.kernel32.GetConsoleWindow
+    get_console_window.restype = wintypes.HWND
+    is_window_visible = ctypes.windll.user32.IsWindowVisible
+    is_window_visible.argtypes = [wintypes.HWND]
+    is_window_visible.restype = wintypes.BOOL
+    if not is_window_visible(get_console_window()):
+        bpy.ops.wm.console_toggle()
+
 
 
 def defer_call(operator: bpy.types.Operator) -> bool:
@@ -93,6 +111,7 @@ class SBE_FullBuildScene(bpy.types.Operator):
     bpl_auto_load = True
 
     def execute(self, _context: bpy.types.Context):
+        ensure_system_console()
         if defer_call(self):
             return {"FINISHED"}
         try:
@@ -118,6 +137,7 @@ class SBE_FullBuildLevel(bpy.types.Operator):
     bpl_auto_load = True
 
     def execute(self, context: bpy.types.Context):
+        ensure_system_console()
         if defer_call(self):
             return {"FINISHED"}
 

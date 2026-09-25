@@ -45,7 +45,7 @@ blender/
         loader_addon/stuntboost_bpl.py  This needs to be installed into blender
         stuntboost_bpl_runtime.py       This will be loaded by stuntboost_bpl.py and contains most of the loading logic
         bpl_auto_load/
-      assets                            Contains asset lib files, TODO automaticcally setup libs, TODO copy them here from internal assets?
+      assets                            Contains asset lib files
         Props
         Skybox
         RoomShared

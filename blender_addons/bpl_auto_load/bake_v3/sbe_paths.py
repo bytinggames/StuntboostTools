@@ -41,11 +41,17 @@ def get_texture_folder(level_name: str) -> str:
         return os.path.join(get_export_folder(level_name), "textures")
     return os.path.join(get_repo_folder(), "SE/Content/Models/Resources", level_name + ".export")
 
-POSTPRO_BLEND_PATH = os.path.join(get_repo_folder(), "SE/Content/Models/Props/PostProcessing.blend")
+_props_folder = (
+    os.path.join(stuntboost_bpl_runtime.get_game_path(), "StuntboostTools/assets/Models/Props")
+    if EXPORT_CUSTOM_MAPS
+    else os.path.join(get_repo_folder(), "SE/Content/Models/Props")
+)
+
+POSTPRO_BLEND_PATH = os.path.join(_props_folder, "PostProcessing.blend")
 """File used to append post processing node tree"""
 
-PROPS_BLEND_PATH = os.path.join(get_repo_folder(), "SE/Content/Models/Props/Props.blend")
-"""File used to append post processing node tree"""
+PROPS_BLEND_PATH = os.path.join(_props_folder, "Props.blend")
+"""File used to append materials and geometry node groups"""
 
 EXPORT_BLEND_FOLDER = (
     os.path.join(_game_app_data, "build_blends") if EXPORT_CUSTOM_MAPS

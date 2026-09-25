@@ -2,7 +2,6 @@
 Most of the loader logic lives here, so it's not copied into
 the blender prefernces folder where we can't update it.
 """
-# TODO auto setup the libs when the symlinks exist
 
 import sys
 import os
