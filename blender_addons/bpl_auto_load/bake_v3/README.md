@@ -147,7 +147,7 @@ FULL_BAKE_SEQUENCE = [
 ```
 
 # How to debug
-BPL automatically starts `debugpy` on `localhost:5678` through the standalone `stand_alone/python_debugger._py` plugin when renamed to the `py` extension.
+BPL can start `debugpy` on `localhost:5678` through `stand_alone/python_debugger.py`, but it's disabled by default.
 
 Install `debugpy` into Blender's Python once, using Blender's Python Console:
 
@@ -156,4 +156,4 @@ import subprocess, sys
 subprocess.check_call([sys.executable, "-m", "pip", "install", "debugpy"])
 ```
 
-Restart Blender after installation. Attach from VSCode with the Python Debugger or any compatible IDE.
+Remove `python_debugger.py` from the Addon Preference, save preferences, and restart Blender.

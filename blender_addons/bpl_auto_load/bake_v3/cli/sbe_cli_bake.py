@@ -16,7 +16,8 @@ import argparse
 import bpy
 # pylint: enable=import-error
 
-from bake_v3.sbe_util import store_temp, execute_by_idname, get_level_name, get_level_order
+from bake_v3.sbe_util import execute_by_idname, get_level_name, get_level_order
+from bake_v3.sbe_temp_storage import store_temp
 from bake_v3.sbe_logger import SBE_Logger
 from bake_v3.sbe_custom_properties import SBE_TEMP_CLI_BAKE_PROP
 from bake_v3.sbe_operator_ids import (

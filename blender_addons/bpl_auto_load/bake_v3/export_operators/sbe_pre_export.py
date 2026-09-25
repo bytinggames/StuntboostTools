@@ -10,7 +10,8 @@ import bpy
 import bmesh
 # pylint: enable=import-error
 
-from bake_v3.sbe_util import get_bake_target_objects, retrieve_temp
+from bake_v3.sbe_util import get_bake_target_objects
+from bake_v3.sbe_temp_storage import retrieve_temp
 from bake_v3.sbe_export_operator_base import SBE_ExportOperatorBase, SBE_Operator_Start_Result
 from bake_v3.sbe_collection_util import (
     get_bake_collections, get_all_bake_collections, get_collection_parent

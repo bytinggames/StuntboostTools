@@ -27,7 +27,7 @@ def has_game_tools(path):
 
 
 def find_game_path():
-    if sys.platform == "win32":
+    if os.name == "nt":
         steam_roots = (
             Path("C:/Program Files (x86)/Steam"),
             Path("C:/Program Files/Steam"),
@@ -45,7 +45,7 @@ def find_game_path():
 def load_runtime():
     global _runtime, _load_error
     root = Path(bpy.app.binary_path).parent
-    if not any(os.path.lexists(root / name) for name in ("game", "repo")):
+    if not os.path.lexists(root / "game"):
         try:
             game = find_game_path()
             if game is not None:
@@ -53,12 +53,9 @@ def load_runtime():
         except (OSError, ValueError) as exc:
             _load_error = f"Automatic game setup failed: {exc}. Ensure the Blender folder is writable."
             return
-    path = next((path for path in (
-        root / "game" / "StuntboostTools" / _RUNTIME_FILE,
-        root / "repo" / "StuntboostTools" / _RUNTIME_FILE,
-    ) if path.is_file()), None)
-    if path is None:
-        _load_error = "Tools not found. Choose the STUNTBOOST game folder below."
+    path = root / "game" / "StuntboostTools" / _RUNTIME_FILE
+    if not path.is_file():
+        _load_error = "Tools not found. Choose the STUNTBOOST game folder or SE repository root below."
         return
     spec = importlib.util.spec_from_file_location("stuntboost_bpl_runtime", path)
     runtime = importlib.util.module_from_spec(spec)
@@ -81,7 +78,7 @@ def is_directory_link(path):
     except FileNotFoundError:
         return False
     return stat.S_ISLNK(info.st_mode) or (
-        sys.platform == "win32" and info.st_reparse_tag == stat.IO_REPARSE_TAG_MOUNT_POINT
+        os.name == "nt" and info.st_reparse_tag == stat.IO_REPARSE_TAG_MOUNT_POINT
     )
 
 
@@ -96,7 +93,7 @@ def set_game_path(target):
         # Test permission errors first
         with tempfile.TemporaryDirectory(prefix=".stuntboost-link-", dir=link.parent) as temporary:
             replacement = Path(temporary) / "game"
-            if sys.platform == "win32":
+            if os.name == "nt":
                 import _winapi
                 _winapi.CreateJunction(str(target), str(replacement))
             else:
@@ -114,9 +111,9 @@ def set_game_path(target):
 
 
 class BPL_SetGamePath(bpy.types.Operator):
-    """Link the game and load its tools immediately on first-time setup"""
+    """Link game and load its tools on first-time setup"""
     bl_idname = "wm.bpl_set_game_path"
-    bl_label = "Choose STUNTBOOST Game Folder"
+    bl_label = "Choose STUNTBOOST Game folder"
 
     directory: bpy.props.StringProperty(subtype='DIR_PATH', options={'SKIP_SAVE'})
 
@@ -157,16 +154,35 @@ class BPL_Preferences(bpy.types.AddonPreferences):
         if _runtime is not None:
             _runtime.set_file_watching(self.watch_python_files)
 
+    export_custom_maps: bpy.props.BoolProperty(
+        name="Export as Custom Map",
+        description=(
+            "Force export to custom_maps folder. CLI bakes ignore this option! "
+            "SAVE PREFERENCE if you want this to be respected in separate process bakes! "
+        ),
+        default=False,
+    )
+
     watch_python_files: bpy.props.BoolProperty(
         name="Python Hot Reload",
         description="Watch plugin files for changes; when disabled, plugins only load when BPL starts",
-        default=True,
+        default=False,
         update=update_hot_reload,
+    )
+
+    module_blacklist: bpy.props.StringProperty(
+        name="Module Blacklist",
+        description=(
+            "Comma-separated file names to exclude from BPL loading in any folder. "
+            "Save preferences and restart Blender to apply changes"
+        ),
+        default="python_debugger.py, lfs_file_locking.py",
     )
 
     revert_on_reload: bpy.props.BoolProperty(
         name="Revert File on Hot Reload",
         description="Restore original blend state when a python module is reloaded for faster debugging.",
+        default=False,
     )
 
     def draw(self, context):
@@ -180,6 +196,7 @@ class BPL_Preferences(bpy.types.AddonPreferences):
         else:
             layout.label(text="Restart Blender to switch to a different game folder.")
         layout.prop(self, "watch_python_files")
+        layout.prop(self, "module_blacklist")
         if _runtime is not None:
             layout.separator()
             layout.label(text=f"Runtime: {_runtime.__file__}")

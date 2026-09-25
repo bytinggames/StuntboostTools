@@ -37,9 +37,10 @@ class ModuleManager:
     """Folder to watch"""
     revert_on_reload = False
     """Whether to revert the current file on hot reload"""
-    def __init__(self, folder: str, interval_seconds: float):
+    def __init__(self, folder: str, interval_seconds: float, module_blacklist: str):
         self.interval_seconds = interval_seconds
         self.folder = folder
+        self.blacklisted_files = {name.strip() for name in module_blacklist.split(",") if name.strip()}
         self._check_timer = self.__check
 
     def __get_files(self) -> list[str]:
@@ -51,6 +52,8 @@ class ModuleManager:
         pattern = os.path.join(self.folder, "**", "*.py")
         result = []
         for i in glob.glob(pattern, recursive=True):
+            if os.path.basename(i) in self.blacklisted_files:
+                continue
             in_ignore = False
             for j in result_ignore:
                 if i.find(j) != -1:
@@ -194,26 +197,23 @@ def set_file_watching(enabled: bool) -> None:
 
 def draw_preferences(preferences, _context):
     layout = preferences.layout
-    layout.label(text=f"Repository: {get_repo_path()}")
+    layout.label(text=f"Target: {'SE repository' if is_repo() else 'Shipped game'}")
+    if is_repo():
+        layout.prop(preferences, "export_custom_maps")
     row = layout.row()
     row.enabled = preferences.watch_python_files
     row.prop(preferences, "revert_on_reload")
     layout.separator()
-    layout.label(text="Loaded Modules")
-    if BPL_MANAGER is not None:
-        for module, _loader in BPL_MANAGER.modules.items():
-            layout.label(text=module.__file__)
-
-def get_repo_path() -> str:
-    """Return the developer repository, or the selected tools root without one."""
-    repo = pathlib.Path(bpy.app.binary_path).parent / "repo"
-    if repo.is_dir():
-        return str(repo.resolve())
-    return str(pathlib.Path(__file__).resolve().parent.parent)
+    module_count = len(BPL_MANAGER.modules) if BPL_MANAGER is not None else 0
+    layout.label(text=f"Loaded Modules: {module_count}")
 
 def get_game_path() -> str:
-    """Return the game installation linked beside the Blender executable."""
+    """Return the shipped game or SE repository linked beside Blender as game."""
     return str((pathlib.Path(bpy.app.binary_path).parent / "game").resolve())
+
+def is_repo() -> bool:
+    """Whether the game link points to an SE source repository."""
+    return (pathlib.Path(get_game_path()) / "SE" / "SE.csproj").is_file()
 
 class BPL_Reload(bpy.types.Operator):
     """Reload all modules"""
@@ -233,7 +233,7 @@ def start_bpl() -> None:
     print("BPL Auto Load folder: " + auto_load_path)
     if not os.path.isdir(auto_load_path):
         raise FileNotFoundError(f"BPL plugin folder not found: {auto_load_path}")
-    BPL_MANAGER = ModuleManager(auto_load_path, 1)
+    BPL_MANAGER = ModuleManager(auto_load_path, 1, preferences.module_blacklist)
     BPL_MANAGER.revert_on_reload = preferences.revert_on_reload
     BPL_MANAGER.start(preferences.watch_python_files)
 

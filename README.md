@@ -37,8 +37,8 @@ Still having problems?
 
 ## Contributing
 - Clone the repo
-- Replace `.../steamapps/common/STUNTBOOST/StuntboostTools/blender_addons` with a symlink to `blender_addons` from the cloned repo.
-    - TODO tk this is not tested
-- `blender_addons/bpl_auto_load/python_debugger._py` to `python_debugger.py` for a python debugger
+- Replace `.../steamapps/common/STUNTBOOST/StuntboostTools/blender_addons` with a symlink/mklink to `blender_addons` from the cloned repo.
+    - Hasn't been testsed yet.
+- [How to enable Python debugger](./blender_addons/bpl_auto_load/bake_v3/README.md#how-to-debug)
 - Small fixes are welcome
 - Let us know before implementing large features. We might not be able to merge those without breaking our iternal tooling, which also relies on this repo.

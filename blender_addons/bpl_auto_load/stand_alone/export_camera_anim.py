@@ -13,7 +13,6 @@ from bake_v3.sbe_util import get_filename_without_extension
 
 is_windows = os.name == 'nt'
 video_folder_name = os.path.join("stuntboost_video", "replays")
-game_binary_relative  = os.path.join("SE", "bin", "Debug", "net8.0", "STUNTBOOST")
 CHECK_INTERVAL_SEC = 3
 
 def run_export(path: str):
@@ -133,8 +132,10 @@ class SB_RenderCameraAnim(bpy.types.Operator):
         target_path = os.path.join(tempfile.gettempdir(), video_folder_name, f"{current_level}_{context.active_object.name}.camani.gltf")
         run_export(target_path)
         
-        repo_path = stuntboost_bpl_runtime.get_repo_path()
-        game_binary_path = os.path.join(repo_path, game_binary_relative)
+        game_path = stuntboost_bpl_runtime.get_game_path()
+        if stuntboost_bpl_runtime.is_repo():
+            game_path = os.path.join(game_path, "SE", "bin", "Debug", "net8.0")
+        game_binary_path = os.path.join(game_path, "STUNTBOOST")
         if is_windows:
             game_binary_path = game_binary_path + ".exe"
         

@@ -4,6 +4,7 @@ import os
 
 # pylint: disable=import-error
 import bpy
+import stuntboost_bpl_runtime
 # pylint: enable=import-error
 
 
@@ -14,8 +15,9 @@ class SB_SetupAssetLibraries:
         os.makedirs(os.path.join(executable_folder, "levels"), exist_ok=True)
         libraries = bpy.context.preferences.filepaths.asset_libraries
         models_path = os.path.join(
-            executable_folder,
-            "game", "StuntboostTools", "assets", "Models",
+            executable_folder, "game",
+            "SE/Content/Models" if stuntboost_bpl_runtime.is_repo()
+            else "StuntboostTools/assets/Models",
         )
         for name, folder in (
             ("StuntboostRooms", "Rooms"),

@@ -5,7 +5,6 @@ these are defined here and called from new "meta ops"
 """
 
 import os
-import sys
 import subprocess
 import datetime
 
@@ -24,13 +23,14 @@ from bake_v3.sbe_export_sequences import (
     FULL_BAKE_SEQUENCE, INSPECT_EXPORT, FAST_BAKE_SEQUENCE,
 )
 from bake_v3.sbe_logger import SBE_Logger
-from bake_v3.sbe_util import execute_by_idname, store_temp, ensure_saved_as_bake_blend
+from bake_v3.sbe_util import execute_by_idname, ensure_saved_as_bake_blend
+from bake_v3.sbe_temp_storage import store_temp
 from bake_v3.properties.sbe_blend_props import SBE_BlendProperties
 from bake_v3.sbe_sound import error_sound
 
 def ensure_system_console():
     """Show the Windows console without hiding an already visible console."""
-    if sys.platform != "win32" or bpy.app.background:
+    if os.name != "nt" or bpy.app.background:
         return
 
     import ctypes

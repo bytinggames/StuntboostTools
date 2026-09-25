@@ -1,5 +1,8 @@
 r"""
 CLI Blender reference helper
+THIS ISN'T TESTED VERY WELL.
+Keep backups of your blends!
+
 
 blender \
     --background --factory-startup --disable-autoexec --python-exit-code 2 \
@@ -8,8 +11,8 @@ blender \
 
 Run through Blender, not Python; tool options follow "--" (use "--help" for help).
 --directory scans all .blend files recursively, including exports, not backups;
-no add-on setup required. Omit it to use the configured stuntboost_bpl_runtime
-repository and legacy export exclusions.
+no add-on setup required. Omit it to scan the configured game link's repository
+root or shipped StuntboostTools folder, with legacy export exclusions.
 
 Actions (--action):
   missing     Default, read-only. Reports missing libraries, linked datablocks,
@@ -69,7 +72,8 @@ parser.add_argument('-a', '--action', default='missing',
 
 parser.add_argument('--directory',
     help='Recursively scan all .blend files, including exports, without add-on setup. '
-         'Omit to use the configured repo and legacy export exclusions.')
+         "Omit to scan the configured game link's repository root or shipped "
+         'StuntboostTools folder, with legacy export exclusions.')
 
 parser.add_argument('-o', '--output',
     help='Overwrite a UTF-8 report. Missing/move also print the report to stdout; '
@@ -148,9 +152,10 @@ def gather_blends() -> list[str]:
 
     import stuntboost_bpl_runtime
 
-    repo = stuntboost_bpl_runtime.get_repo_path()
-    # no idea if the glob pattern is redundant
-    blends = glob.glob(os.path.join(repo, "**", "*.blend"), recursive=True)
+    scan_root = stuntboost_bpl_runtime.get_game_path()
+    if not stuntboost_bpl_runtime.is_repo():
+        scan_root = os.path.join(scan_root, "StuntboostTools")
+    blends = glob.glob(os.path.join(scan_root, "**", "*.blend"), recursive=True)
     filtered_blends = []
     for i in blends:
         if i.find(".blend1") != -1:

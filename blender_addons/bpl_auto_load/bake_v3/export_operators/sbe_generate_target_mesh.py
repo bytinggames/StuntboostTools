@@ -16,8 +16,9 @@ import bmesh
 
 from bake_v3.sbe_operator_ids import SBE_OP_TARGET_MESHES
 from bake_v3.sbe_logger import SBE_Logger
+from bake_v3.sbe_temp_storage import store_temp, retrieve_temp
 from bake_v3.sbe_util import (
-    store_temp, retrieve_temp, find_or_get_node_tree, set_node_group_value,
+    find_or_get_node_tree, set_node_group_value,
     version_has_new_geo_nodes_accessor
 )
 from bake_v3.sbe_export_operator_base import SBE_ExportOperatorBase, SBE_Operator_Start_Result

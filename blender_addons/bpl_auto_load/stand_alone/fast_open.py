@@ -46,7 +46,7 @@ def get_title(key: str, name: str) -> str:
 
 
 def build_folder(path: str, key: str, level_oder: list[str] = [], recursive=False) -> MenuItem:
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         return None
     if recursive:
         globbed = glob.glob(os.path.join(path, "**", "*.blend"), recursive=True)
@@ -70,36 +70,40 @@ def build_folder(path: str, key: str, level_oder: list[str] = [], recursive=Fals
     return result
 
 def build_items() -> list[MenuItem]:
-    repo_path: str = stuntboost_bpl_runtime.get_repo_path()
+    game_path = stuntboost_bpl_runtime.get_game_path()
     level_order = get_level_order()
     index = 0
 
     def add_item(path: str, recursive:bool=True):
         nonlocal index
         result = build_folder(path=path, key=get_key_for_i(index), level_oder=level_order, recursive=recursive)
-        index += 1
+        if result is not None:
+            index += 1
         return result
 
-    items = [
-        add_item(os.path.join(repo_path, "SE", "Content", "Models", "Sascha")),
-        # add_item(os.path.join(repo_path, "SE", "Content", "Models", "LivingRoom")),
-        # add_item(os.path.join(repo_path, "SE", "Content", "Models", "Kitchen")),
-        # add_item(os.path.join(repo_path, "SE", "Content", "Models", "Siste^"Sir")),
-        add_item(os.path.join(repo_path, "SE", "Content", "Models", "New")),
-        add_item(os.path.join(repo_path, "SE", "Content", "Models", "Bonus")),
-        add_item(os.path.join(repo_path, "SE", "Content", "Models", "Unassigned")),
-        add_item(os.path.join(repo_path, "SE", "Content", "Models", "Test")),
-        add_item(os.path.join(repo_path, "SE", "Content", "Models", "Props")),
-        add_item(os.path.join(repo_path, "SE", "Content", "Models", "Rooms")),
-        add_item(os.path.join(repo_path, "SE", "Content", "Models"), False),
-        add_item(os.path.join(repo_path, "..", "SEMeta", "ArtSource")),
-        add_item(os.path.join(repo_path, "..", "SEMeta", "ArtDirection")),
-        add_item(os.path.join(repo_path, "..", "SEMeta", "PR")),
-        add_item(os.path.join(repo_path, "..", "SEMeta", "LevelDesign")),
-    ]
+    if stuntboost_bpl_runtime.is_repo():
+        items = [
+            add_item(os.path.join(game_path, "SE", "Content", "Models", "Sascha")),
+            add_item(os.path.join(game_path, "SE", "Content", "Models", "New")),
+            add_item(os.path.join(game_path, "SE", "Content", "Models", "Bonus")),
+            add_item(os.path.join(game_path, "SE", "Content", "Models", "Unassigned")),
+            add_item(os.path.join(game_path, "SE", "Content", "Models", "Test")),
+            add_item(os.path.join(game_path, "SE", "Content", "Models", "Props")),
+            add_item(os.path.join(game_path, "SE", "Content", "Models", "Rooms")),
+            add_item(os.path.join(game_path, "SE", "Content", "Models"), False),
+            add_item(os.path.join(game_path, "..", "SEMeta", "ArtSource")),
+            add_item(os.path.join(game_path, "..", "SEMeta", "ArtDirection")),
+            add_item(os.path.join(game_path, "..", "SEMeta", "PR")),
+            add_item(os.path.join(game_path, "..", "SEMeta", "LevelDesign")),
+        ]
+    else:
+        items = [
+            add_item(os.path.join(os.path.dirname(bpy.app.binary_path), "levels")),
+            add_item(os.path.join(game_path, "StuntboostTools", "assets")),
+            add_item(os.path.join(game_path, "StuntboostTools", "examples")),
+        ]
 
-    if None in items:
-        items.remove(None)
+    items = [item for item in items if item is not None]
 
     if bpy.data.filepath:
         load_next = False

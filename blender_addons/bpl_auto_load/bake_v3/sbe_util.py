@@ -10,6 +10,7 @@ from functools import lru_cache
 
 # pylint: disable=import-error
 import bpy
+import stuntboost_bpl_runtime
 # pylint: enable=import-error
 
 from bake_v3.sbe_custom_properties import (
@@ -17,7 +18,8 @@ from bake_v3.sbe_custom_properties import (
     SBE_TEMP_CLI_BAKE_PROP, SBE_GLOBAL_ORIGINAL_BLEND_PATH
 )
 from bake_v3.sbe_logger import SBE_Logger
-from bake_v3.sbe_paths import EXPORT_BLEND_FOLDER, ensure_folder, get_repo_folder
+from bake_v3.sbe_paths import EXPORT_BLEND_FOLDER, ensure_folder
+from bake_v3.sbe_temp_storage import retrieve_temp
 
 
 def version_has_new_geo_nodes_accessor():
@@ -80,20 +82,6 @@ def retrieve_persistent(key: str) -> any:
     return None
 
 
-def store_temp(key: str, value: any) -> None:
-    """
-    Store a session temporary global value. Not saved in blend and will be wiped when loading new blend.
-    Types like lists will be converted to blender internal types!
-    """
-    bpy.data.window_managers['WinMan'][key] = value
-
-
-def retrieve_temp(key: str) -> any:
-    """Get a session temporary value previously set by store_temp, or None if nothing was stored"""
-    if key in bpy.data.window_managers['WinMan']:
-        return bpy.data.window_managers['WinMan'][key]
-    return None
-
 def cut_out_room_id(filename: str) -> str:
     """
     remove the room index from filename
@@ -134,8 +122,10 @@ def get_level_name(path: str) -> str:
 
 
 def get_level_order() -> list[str]:
-    """Get a list of level names formatted like `get_level_name` from the Levels.csv"""
-    repo_path: str = get_repo_folder()
+    """Get repository CSV level ordering, or no ordering for shipped games."""
+    if not stuntboost_bpl_runtime.is_repo():
+        return []
+    repo_path: str = stuntboost_bpl_runtime.get_game_path()
     levels_dir = os.path.join(repo_path, "SE", "Content", "Other")
     level_order_csv = os.path.join(levels_dir, "Levels.csv")
     result = []

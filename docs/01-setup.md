@@ -58,7 +58,7 @@ blender/
 
 ## Configuring Blender
 - Expand `STUNTBOOST Blender Plugin Loader` in `Edit` > `Preferences` > `Add-ons`.
-- If automatic discovery did not find the game, click `Choose STUNTBOOST Game Folder` and select the game installation.
+- If automatic discovery did not find the game, click `Choose STUNTBOOST Game` and select the game installation.
 - If the top menu bar does not show `STUNTBOOST`, check the loader's preferences for an error and confirm the selected game includes the runtime and plugins.
 - Go to `Edit` > `Prefernces` > `System`
 - Ensure the `Cycles Render Devices` is not set to `None`
@@ -68,4 +68,5 @@ blender/
     - Intel ARC GPUs use `oneAPI`
     - If your GPU isn't listed under none of the options, you'll have to live with `None`
         - This will bake on the CPU which is about 10x slower but it should still work.
+- Click small burger menu in bottom right -> `Save Preferences`
 - Setup is all done :)

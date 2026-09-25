@@ -15,7 +15,7 @@ from bake_v3.sbe_logger import SBE_Logger
 from bake_v3.sbe_export_operator_base import SBE_ExportOperatorBase, SBE_Operator_Start_Result
 from bake_v3.properties.sbe_collection_props import SBE_CollectionProperties
 from bake_v3.sbe_custom_properties import SBE_TEMP_NO_SKIP_BAKE_PROP
-from bake_v3.sbe_util import retrieve_temp
+from bake_v3.sbe_temp_storage import retrieve_temp
 
 
 def set_bake_skip(collections: list[bpy.types.Collection], skip: bool):

@@ -1,8 +1,8 @@
 # BPL Blender Plugin Loader
 
-After installing the plugin and setting the SE repo path in the plugin
-preferences, it will search all classes in the `SE/blender_addons/bpl_auto_load`
-folder recursively and call a static function `bpl_load` and `bpl_load` or look
-for a `bpl_auto_load` property.
+Install `stuntboost_bpl.py` in Blender and select Choose STUNTBOOST Game in the addon preferences.
 
-On File changes, the module will be reloaded and the function called again.
+The loader creates a single `game` directory link besides the blender exe so everything is portable.
+The loader will look for the `stuntboost_bpl_runtime.py` in the game folder which contains the bulk of the logic.
+The runtime searches `bpl_auto_load` recursively for classes with `bpl_load` /
+`bpl_unload` methods or a `bpl_auto_load` property. When Python Hot Reload is enabled, changed plugin modules are reloaded.

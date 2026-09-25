@@ -7,7 +7,7 @@ import bpy
 # pylint: enable=import-error
 
 from bake_v3.sbe_custom_properties import SBE_TEMP_NO_SKIP_BAKE_PROP
-from bake_v3.sbe_util import retrieve_temp
+from bake_v3.sbe_temp_storage import retrieve_temp
 
 def get_collection_parent(collection: bpy.types.Collection) -> bpy.types.Collection | None:
     """Get the direct parent of a collection, including the scene collection!"""
