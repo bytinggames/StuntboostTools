@@ -147,6 +147,7 @@ class SBE_Logger():
     @staticmethod
     def stop_auto_update():
         SBE_Logger.SBE_LOG_THREAD_RUNNING = False
+        SBE_Logger.update(force=True)
         if SBE_Logger.SBE_LOG_THREAD:
             SBE_Logger.SBE_LOG_THREAD.join()
 
@@ -230,9 +231,9 @@ class SBE_Logger():
 
 
     @staticmethod
-    def update(clear: bool = True):
+    def update(clear: bool = True, force: bool = False):
         current_time = time.time()
-        if current_time - SBE_Logger.SBE_LAST_UPDATE < (1.0 / 2.0):
+        if not force and current_time - SBE_Logger.SBE_LAST_UPDATE < (1.0 / 2.0):
             # prevent too many updates since the windows terminal slows down the bake a lot
             return
         SBE_Logger.SBE_LAST_UPDATE = current_time

@@ -25,6 +25,11 @@ blender -b -P "./sbe_cli.py" -- --help
 
 All commands after `--` will be forwarded to the cli script, everything in front will be passed to blender cli interface!
 
+### Post-processing library versions
+- Blender 4.x uses `Props/PostProcessing.blend`
+- Blender 5+ uses `Props/PostProcessing_blender_5.blend`.
+Before the bake makes linked assets local, it redirects references to `PostProcessing.blend` to the 5+ file beside it.
+
 ## Functionality
 
 ### Current Object Naming Syntax

@@ -208,12 +208,13 @@ def draw_preferences(preferences, _context):
     layout.label(text=f"Loaded Modules: {module_count}")
 
 def get_game_path() -> str:
-    """Return the shipped game or SE repository linked beside Blender as game."""
-    return str((pathlib.Path(bpy.app.binary_path).parent / "game").resolve())
+    """Resolve repository paths, but retain the game link for shipped assets."""
+    path = pathlib.Path(bpy.app.binary_path).parent / "game"
+    return str(path.resolve() if is_repo() else path)
 
 def is_repo() -> bool:
     """Whether the game link points to an SE source repository."""
-    return (pathlib.Path(get_game_path()) / "SE" / "SE.csproj").is_file()
+    return (pathlib.Path(bpy.app.binary_path).parent / "game" / "SE" / "SE.csproj").is_file()
 
 class BPL_Reload(bpy.types.Operator):
     """Reload all modules"""

@@ -111,13 +111,13 @@ class SBE_BakeProperties(bpy.types.PropertyGroup):
 
     post_process_node_set: bpy.props.BoolProperty(name="Post Processing Node set", default=False)
     post_process_node: bpy.props.StringProperty(
-        name="Post Processing Node", description="The name of the post processing node group used in the compositor, needs to either exist in this file or /Props/PostProcessing.blend",
+        name="Post Processing Node", description="The name of the post processing node group used in the compositor, needs to either exist in this file or /Props/PostProcessing.blend (PostProcessing_blender_5.blend on Blender 5+)",
         default=SBE_BakePropertiesDefault.post_process_node,
         search=post_process_node_suggestions, search_options={'SUGGESTION'})
 
     color_grade_node_set: bpy.props.BoolProperty(name="Color Grade Node set", default=False)
     color_grade_node: bpy.props.StringProperty(
-        name="Color Grade Node", description="The name of the color grade node group used in the compositor after post processing, needs to either exist in this file or /Props/PostProcessing.blend",
+        name="Color Grade Node", description="The name of the color grade node group used in the compositor after post processing, needs to either exist in this file or /Props/PostProcessing.blend (PostProcessing_blender_5.blend on Blender 5+)",
         default=SBE_BakePropertiesDefault.color_grade_node,
         search=post_process_node_suggestions, search_options={'SUGGESTION'})
 

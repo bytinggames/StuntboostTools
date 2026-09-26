@@ -52,8 +52,11 @@ _props_folder = (
     else os.path.join(stuntboost_bpl_runtime.get_game_path(), "SE/Content/Models/Props")
 )
 
-POSTPRO_BLEND_PATH = os.path.join(_props_folder, "PostProcessing.blend")
-"""File used to append post processing node tree"""
+POSTPRO_BLEND_PATH = os.path.join(
+    _props_folder,
+    "PostProcessing_blender_5.blend" if bpy.app.version[0] >= 5 else "PostProcessing.blend"
+)
+"""Version-compatible file used to append post processing node trees"""
 
 PROPS_BLEND_PATH = os.path.join(_props_folder, "Props.blend")
 """File used to append materials and geometry node groups"""

@@ -63,13 +63,28 @@ def append_properties(collections: list[bpy.types.Collection]) -> None:
 
 
 def sync_booster_text(objects: list[bpy.types.Object]) -> None:
-    """Syncs the visual booster text to the game logic value set from the name"""
+    """Syncs booster names and visual speed, naming unmarked objects from their modifier."""
     with SBE_Logger("sync_booster_text"):
         booster_group_name = 'Booster'
         if booster_group_name not in bpy.data.node_groups:
             return
         booster_text_socket = bpy.data.node_groups[booster_group_name].nodes['Group Input'].outputs['CM/S'].identifier
         for obj in objects:
+            if "#=Booster" not in obj.name:
+                for mod in obj.modifiers:
+                    if mod.type != 'NODES' or mod.node_group != bpy.data.node_groups[booster_group_name]:
+                        continue
+                    if version_has_new_geo_nodes_accessor():
+                        if booster_text_socket not in mod.properties.inputs:
+                            continue
+                        booster_val = getattr(mod.properties.inputs, booster_text_socket).value
+                    else:
+                        if booster_text_socket not in mod:
+                            continue
+                        booster_val = mod[booster_text_socket]
+                    obj.name = f"#=Booster({booster_val})"
+                    break
+                continue
             if obj.name.find("=Booster") != -1:
                 # TODO name parser edge case
                 value_index = obj.name.find("(") + 1

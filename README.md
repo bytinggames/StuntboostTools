@@ -6,6 +6,8 @@ This contains modding tools for the game [STUNBOOST](https://store.steampowered.
 - Some patience and/or familiarity with Blender
     - Blender is not a easy level editor, but a giant 3D Modelling animation Tool!
     - There is a bit of a learning curve, but we're trying our best to make it straight forward.
+        - There's also a million key binds
+        - Don't press random buttons or some hidden state will change and subtly alter behavior leaving you frustrated (I've been there)
 - A decent computer with a supported GPU
     - This depends on how complex the levels are, and how close the original game look should be matched.
 - The Full Game downloaded
@@ -40,5 +42,6 @@ Still having problems?
 - Replace `.../steamapps/common/STUNTBOOST/StuntboostTools/blender_addons` with a symlink/mklink to `blender_addons` from the cloned repo.
     - Hasn't been testsed yet.
 - [How to enable Python debugger](./blender_addons/bpl_auto_load/bake_v3/README.md#how-to-debug)
+- Enable python hot reload in the loader addon preferences
 - Small fixes are welcome
 - Let us know before implementing large features. We might not be able to merge those without breaking our iternal tooling, which also relies on this repo.

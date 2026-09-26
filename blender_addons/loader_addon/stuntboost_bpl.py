@@ -11,7 +11,7 @@ import bpy
 bl_info = {
     "name": "STUNTBOOST Blender Plugin Loader",
     "blender": (4, 3, 0),
-    "version": (0, 0, 1),
+    "version": (0, 0, 2),
     "category": "Generic",
     "author": "tobi",
 }
@@ -165,7 +165,7 @@ class BPL_Preferences(bpy.types.AddonPreferences):
 
     watch_python_files: bpy.props.BoolProperty(
         name="Python Hot Reload",
-        description="Watch plugin files for changes; when disabled, plugins only load when BPL starts",
+        description="Watch plugin files for changes. When disabled, plugins only load when BPL starts",
         default=False,
         update=update_hot_reload,
     )

@@ -18,7 +18,7 @@ from bake_v3.sbe_custom_properties import (
     SBE_TEMP_CLI_BAKE_PROP, SBE_GLOBAL_ORIGINAL_BLEND_PATH
 )
 from bake_v3.sbe_logger import SBE_Logger
-from bake_v3.sbe_paths import EXPORT_BLEND_FOLDER, ensure_folder
+from bake_v3.sbe_paths import EXPORT_BLEND_FOLDER, POSTPRO_BLEND_PATH, ensure_folder
 from bake_v3.sbe_temp_storage import retrieve_temp
 
 
@@ -248,8 +248,27 @@ def supports_spill_control(context: bpy.types.Context) -> bool:
     return False
 
 
+def adapt_post_processing_libraries() -> None:
+    """Reload legacy linked groups before making them local on Blender 5+."""
+    if bpy.app.version[0] < 5:
+        return
+
+    for library in list(bpy.data.libraries):
+        source_path = bpy.path.abspath(library.filepath)
+        if os.path.basename(source_path).lower() != "postprocessing.blend":
+            continue
+        replacement_path = os.path.join(os.path.dirname(source_path), "PostProcessing_blender_5.blend")
+        if not os.path.isfile(replacement_path):
+            raise FileNotFoundError(f"Blender 5 post-processing library not found: {replacement_path}")
+        SBE_Logger.print(f"Switching post-processing library to {replacement_path}")
+        library.filepath = replacement_path
+        library.reload()
+
+
 def find_or_get_node_tree(node_group_name: str, blend_file: str, link = False) -> bpy.types.NodeTree | bpy.types.ShaderNodeTree | bpy.types.GeometryNodeTree:
     """Locate the node group by name or append/link it from the blend provided"""
+    if blend_file == POSTPRO_BLEND_PATH:
+        adapt_post_processing_libraries()
     if node_group_name in bpy.data.node_groups:
         return bpy.data.node_groups[node_group_name]
 

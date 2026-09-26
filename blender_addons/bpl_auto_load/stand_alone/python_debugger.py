@@ -17,7 +17,7 @@ class SB_PythonDebugger:
             )
             return
 
-        # The imported module survives BPL reloads; this plugin's class does not.
+        # The imported module survives BPL reloads, this plugin's class does not.
         if getattr(debugpy, "_stuntboost_listener_started", False):
             return
 

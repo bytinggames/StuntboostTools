@@ -9,9 +9,9 @@ blender \
     --python ./sbe_cli_references.py \
     -- --directory /path/to/blends" 
 
-Run through Blender, not Python; tool options follow "--" (use "--help" for help).
---directory scans all .blend files recursively, including exports, not backups;
-no add-on setup required. Omit it to scan the configured game link's repository
+Run through Blender, not Python directly. Tool options after "--" (use "--help" for help).
+--directory scans all .blend files recursively, including exports, not blend1-10.
+Omit it to scan the configured game link's repository
 root or shipped StuntboostTools folder, with legacy export exclusions.
 
 Actions (--action):
@@ -35,8 +35,8 @@ Actions (--action):
               Preview: --action move --directory "C:\assets" --move_from "C:\assets\old.png"
                        --move_to "C:\assets\textures\new.png" --dry_run
 
---output overwrites a UTF-8 report; missing/move also print it to stdout.
---dry_run previews remap/move without modifying assets; move skips confirmation.
+--output writes a UTF-8 report. Missing/move also print it to stdout.
+--dry_run previews remap/move without modifying assets, move skips confirmation.
 Close blends and keep backups. Sources are deleted only after all saves succeed.
 Batches are not transactional: failures may leave saved dependents/new destinations.
 Exit codes: 0 success, 1 missing references, 2 invalid/incomplete operation.
@@ -62,7 +62,7 @@ import bpy
 
 parser = argparse.ArgumentParser(
     prog="sbe_cli_references",
-    description="Manage Blender references; default: scan for missing references.",
+    description="Manage Blender references. default: scan for missing references.",
     epilog=__doc__,
     formatter_class=argparse.RawDescriptionHelpFormatter)
 
@@ -76,20 +76,20 @@ parser.add_argument('--directory',
          'StuntboostTools folder, with legacy export exclusions.')
 
 parser.add_argument('-o', '--output',
-    help='Overwrite a UTF-8 report. Missing/move also print the report to stdout; '
+    help='Overwrite a UTF-8 report. Missing/move also print the report to stdout '
          'list/list_blend/remap write only to the report.')
 
 parser.add_argument('-d', '--dry_run', action='store_true',
-    help='Validate and report remap/move without modifying assets; move does not prompt.')
+    help='Validate and report remap/move without modifying assets. Move does not prompt.')
 
 
 parser.add_argument('-from', '--move_from',
-    help='Glob pattern for move (quote it; ** recurses). Independent of --directory, '
+    help='Glob pattern for move (quote it). Independent of --directory, '
          'which selects files scanned for references.')
 
 parser.add_argument('-to', '--move_to',
     help='Existing destination directory, or a new filename for one source. '
-         'Keep the same extension; never overwrites.')
+         'Keep the same extension, never overwrites.')
 
 parser.add_argument('-rbt', '--remap_block_type',
     help='Name of the member in bpy.data.* e.g. "objects" or "collections" when using "-a remap"')
@@ -100,7 +100,7 @@ parser.add_argument('-rnb', '--remap_new_block',
     help='Name of the new data block in blend in "-remap_new_file"')
 
 parser.add_argument('-rof', '--remap_old_file', default='',
-    help='Exact old-library path for remap; omit only when the old name identifies one linked datablock.')
+    help='Exact old-library path for remap. Omit only when the old name identifies one linked datablock.')
 parser.add_argument('-rob', '--remap_old_block',
     help='Name of the old linked datablock to replace with --remap_new_block.')
 
@@ -331,10 +331,10 @@ def remap_in_current_blend(
     if not candidates:
         return blend
     if len(candidates) != 1:
-        raise ValueError("Ambiguous old datablock; specify --remap_old_file")
+        raise ValueError("Ambiguous old datablock, specify --remap_old_file")
     old = candidates[0]
     if old.is_library_indirect:
-        raise ValueError("Indirect datablocks are unsupported; remap their owning library instead")
+        raise ValueError("Indirect datablocks are unsupported, remap their owning library instead")
     if canonical_path(blend_path) == new_block.library:
         raise ValueError("Cannot link a replacement from the file being edited")
 
@@ -402,7 +402,7 @@ def remap_all(bpy_data_member: str, old_block: BlockInfo, new_block: BlockInfo) 
 
 
 def rewrite_move_references(relocations: dict[str, str], scanned: set[str], apply=False):
-    """Inspect one loaded blend; only keep Blender ID references within this call."""
+    """Inspect one loaded blend, only keep Blender ID references within this call."""
     edits = []
     handled = Counter()
     dependencies = set()
@@ -490,8 +490,7 @@ def move_blends() -> int:
     scanned = set(paths)
     for source, _ in moves:
         if pathlib.Path(source).suffix.lower() == '.blend' and canonical_path(source) not in scanned:
-            parser.error(f"Source blend is outside the scan; widen --directory: {source}")
-    # Include future library paths when checking ownership during the write pass.
+            parser.error(f"Source blend is outside the scan, widen --directory: {source}")
     owners = scanned | {canonical_path(target) for source, target in moves
                         if pathlib.Path(source).suffix.lower() == '.blend'}
     changed = {}
@@ -506,7 +505,7 @@ def move_blends() -> int:
     try:
         order = list(TopologicalSorter(graph).static_order())
     except CycleError:
-        parser.error("Cyclic library dependencies are unsupported; no files were changed")
+        parser.error("Cyclic library dependencies are unsupported. No files were changed")
 
     with report_lines() as emit:
         for source, target in moves:

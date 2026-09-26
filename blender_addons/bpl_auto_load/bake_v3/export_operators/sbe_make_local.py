@@ -8,6 +8,7 @@ from bake_v3.sbe_name_parser import collection_is_discard
 from bake_v3.sbe_collection_util import delete_collection_hierarchy
 from bake_v3.properties.sbe_collection_props import SBE_CollectionProperties
 from bake_v3.sbe_export_operator_base import SBE_ExportOperatorBase, SBE_Operator_Start_Result
+from bake_v3.sbe_util import adapt_post_processing_libraries
 
 def check_missing() -> bool:
     block_lists = [
@@ -52,6 +53,8 @@ class SBE_MakeLocal(SBE_ExportOperatorBase):
     def execute_internal(self, context: bpy.types.Context, start: SBE_Operator_Start_Result):
         if start.has_run:
             return # Only should run once
+
+        adapt_post_processing_libraries()
 
         # We need to check for missing stuff before severing the library links,
         # otherwise we won't know where the missing data block was linked from.

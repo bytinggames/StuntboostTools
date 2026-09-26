@@ -46,6 +46,9 @@ def get_title(key: str, name: str) -> str:
 
 
 def build_folder(path: str, key: str, level_oder: list[str] = [], recursive=False) -> MenuItem:
+    repo = stuntboost_bpl_runtime.is_repo()
+    if repo:
+        path = os.path.realpath(path)
     if not os.path.isdir(path):
         return None
     if recursive:
@@ -64,7 +67,7 @@ def build_folder(path: str, key: str, level_oder: list[str] = [], recursive=Fals
     for i, blend in enumerate(globbed):
         result.children.append(MenuItem(
             name=get_title(get_key_for_i(i), get_level_name(blend)),
-            file_path=blend, children=None)
+            file_path=os.path.realpath(blend) if repo else blend, children=None)
         )
     result.children.append(MenuItem(name=get_title("B", "Back"), file_path=None, children=None))
     return result

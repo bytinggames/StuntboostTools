@@ -15,7 +15,7 @@ class SB_SetupAssetLibraries:
         os.makedirs(os.path.join(executable_folder, "levels"), exist_ok=True)
         libraries = bpy.context.preferences.filepaths.asset_libraries
         models_path = os.path.join(
-            executable_folder, "game",
+            stuntboost_bpl_runtime.get_game_path(),
             "SE/Content/Models" if stuntboost_bpl_runtime.is_repo()
             else "StuntboostTools/assets/Models",
         )
@@ -24,6 +24,8 @@ class SB_SetupAssetLibraries:
             ("StuntboostProps", "Props"),
         ):
             path = os.path.join(models_path, folder)
+            if stuntboost_bpl_runtime.is_repo():
+                path = os.path.realpath(path)
             library = libraries.get(name)
             if library is None:
                 library = libraries.new(name=name, directory=path)
