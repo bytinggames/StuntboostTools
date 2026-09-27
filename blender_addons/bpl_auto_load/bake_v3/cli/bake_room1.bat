@@ -1,3 +1,0 @@
-@echo off
-blender -b -P "./sbe_cli_bake.py" -- -p "../../../../SE/Content/Models/Sascha/*.blend" -y
-set /p DUMMY=Hit ENTER to continue...

@@ -1,3 +1,0 @@
-@echo off
-blender -b -P "./sbe_cli_bake.py" -- -p "../../../../SE/Content/Models/Unassigned/Level_*.blend" --setting "FAST" -y
-set /p DUMMY=Hit ENTER to continue...
