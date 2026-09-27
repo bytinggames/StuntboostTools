@@ -1,6 +1,8 @@
 # STUNTBOOST Tools & Friends
 
-This contains modding tools for the game [STUNBOOST](https://store.steampowered.com/app/2999500/STUNTBOOST/) as well as documentation and the source code to the exporter.
+This contains modding tools for the game [STUNBOOST](https://store.steampowered.com/app/2999500/STUNTBOOST/) as well as documentation and the source code to the blender exporter.
+
+This is work and progress. We'll work on improving the feature set and documentation if there's a real demand for custom levels.
 
 ## Requirements
 - Some patience and/or familiarity with Blender
@@ -44,6 +46,7 @@ Still having problems?
     - Help us write better user documentation by editing the .md files
     - Implement small fixes or features
         - Let us know before implementing large features. We might not be able to merge those without breaking our iternal tooling, which also relies on this repo.
+
 
 ## Development Setup
 - Replace `.../steamapps/common/STUNTBOOST/StuntboostTools/blender_addons` with a symlink/mklink to `blender_addons` from the cloned repo.
