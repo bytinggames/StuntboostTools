@@ -39,10 +39,14 @@ class SBE_SkipGroups(SBE_ExportOperatorBase):
     keep_selection = True
 
     def execute_internal(self, context: bpy.types.Context, start: SBE_Operator_Start_Result):
-        if len(context.scene.collection.children) == 1:
-            col: bpy.types.Collection = context.scene.collection.children[0]
-            props: SBE_CollectionProperties = SBE_CollectionProperties.get(col)
-            props.is_bake_group = True
+        # because blender has one collection as a default below the scene collection
+        # mark it at the bake collection for normal scenes for convenience.
+        if not context.scene.name.startswith("//") and context.scene.name.find("Skybox") == -1:
+            # The skybox has its own logic for bake collection fallbacks, so skip it here
+            if len(context.scene.collection.children) == 1:
+                col: bpy.types.Collection = context.scene.collection.children[0]
+                props: SBE_CollectionProperties = SBE_CollectionProperties.get(col)
+                props.is_bake_group = True
 
         if retrieve_temp(SBE_TEMP_NO_SKIP_BAKE_PROP) is True:
             # No skip logic on cli bakes at all
