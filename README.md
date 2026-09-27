@@ -25,6 +25,7 @@ This contains modding tools for the game [STUNBOOST](https://store.steampowered.
 
 ## FAQ
 Check out the [FAQ here](./docs/faq.md)
+[And the currently missing features](./docs/faq.md#not-implemented-yet)
 
 
 ## Troubleshooting
@@ -33,15 +34,21 @@ Having issues? Checkout or ever expanding list of common pitfals and erros:
 
 
 Still having problems?
-- (Join or Discord community)[https://discord.gg/stuntboost] (I know discord is bad for search engines and public discourse)
-- (Open a issue on github)[https://github.com/bytinggames/StuntboostTools/issues] (If you're sure it's a bug)
+- [Join or Discord community](https://discord.gg/stuntboost) (I know discord is bad for search engines and public discourse)
+- [Open a issue on github](https://github.com/bytinggames/StuntboostTools/issues) (If you're sure it's a bug, or the documentation should be updated)
 
 
 ## Contributing
+- Open issues
 - Clone the repo
+    - Help us write better user documentation by editing the .md files
+    - Implement small fixes or features
+        - Let us know before implementing large features. We might not be able to merge those without breaking our iternal tooling, which also relies on this repo.
+
+## Development Setup
 - Replace `.../steamapps/common/STUNTBOOST/StuntboostTools/blender_addons` with a symlink/mklink to `blender_addons` from the cloned repo.
     - Hasn't been testsed yet.
 - [How to enable Python debugger](./blender_addons/bpl_auto_load/bake_v3/README.md#how-to-debug)
 - Enable python hot reload in the loader addon preferences
-- Small fixes are welcome
-- Let us know before implementing large features. We might not be able to merge those without breaking our iternal tooling, which also relies on this repo.
+- [Bare bones overview of the exporter internals](./blender_addons/bpl_auto_load/bake_v3/README.md#development)
+

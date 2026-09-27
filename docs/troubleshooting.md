@@ -1,4 +1,18 @@
 # Trouble Shooting
+
+## Common problems Section
+
+### I'm seeing red wireframe boxes in game
+This means enteties unknown to the game were exported.
+- Look for any lamps or empties not prefixed by '/'
+
+
+### The export fails
+This can have many reasons.
+- Ensure objects only have one collection parent
+- Ensure the object only hase one UV Layer named `UVMap`
+
+
 ## Help us gather info on the problem
 - TODO Explain how to open/analyze `.export.blend` in `%APPDATA%\STUNTBOOST\build_blends`
 - `STUNTBOOST` > `SBE Load Export/Origin`
@@ -8,8 +22,4 @@
 - TODO explain step by step debugging
 
 
-## Common problems Section
 
-### I'm seeing red wireframe boxes in game
-This means enteties unknown to the game were exported.
-- Look for any lamps or empties not prefixed by '/'

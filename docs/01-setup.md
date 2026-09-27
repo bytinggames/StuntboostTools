@@ -7,7 +7,7 @@
 
 ### Windows
 - Download the preconfigured portable version
-- [Blender]()TODO Link
+- [Custom Blender 4.3.2 Download](https://github.com/bytinggames/StuntboostTools/releases)
 - Unpack somewhere
     - Please don't put it 1000 folders deep somewhere, windows doesn't like long paths :(
 - Run the blender.exe inside
@@ -37,7 +37,28 @@ Providing a prebuilt version isn't really as easy, so there are several options.
 - Enable `STUNTBOOST Blender Plugin Loader`.
 
 
+
+## Configuring Blender
+- Expand `STUNTBOOST Blender Plugin Loader` in `Edit` > `Preferences` > `Add-ons`.
+- If automatic discovery did not find the game, click `Choose STUNTBOOST Game` and select the game installation.
+- Path handling follows the selected target:
+    - **SE repository:** Fast Open and asset libraries use fully resolved filesystem paths, not the `game` junction/symlink.
+    - **Shipped game:** Fast Open opens shipped assets and examples through `blender/game`, and asset libraries use that same junction/symlink. Custom levels remain in `blender/levels`, keeping relative asset links portable.
+- If the top menu bar does not show `STUNTBOOST`, check the loader's preferences for an error and confirm the selected game includes the runtime and plugins.
+- Go to `Edit` > `Prefernces` > `System`
+- Ensure the `Cycles Render Devices` is not set to `None`
+    - For AMD choose `HIP`
+    - For Nvidia try `Optix`
+        - If your GPU isn't listed below, choose `CUDA`
+    - Intel ARC GPUs use `oneAPI`
+    - If your GPU isn't listed under none of the options, you'll have to live with `None`
+        - This will bake on the CPU which is about 10x slower but it should still work.
+- Click small burger menu in bottom right -> `Save Preferences`
+- Setup is all done :)
+
+
 ## Folder Layout
+
 ```text
 blender/
   blender(.exe)
@@ -59,21 +80,4 @@ blender/
 ~/.config/STUNTBOST/custom_maps (linux)
 ```
 
-
-## Configuring Blender
-- Expand `STUNTBOOST Blender Plugin Loader` in `Edit` > `Preferences` > `Add-ons`.
-- If automatic discovery did not find the game, click `Choose STUNTBOOST Game` and select the game installation.
-- Path handling follows the selected target:
-    - **SE repository:** Fast Open and asset libraries use fully resolved filesystem paths, not the `game` junction/symlink.
-    - **Shipped game:** Fast Open opens shipped assets and examples through `blender/game`, and asset libraries use that same junction/symlink. Custom levels remain in `blender/levels`, keeping relative asset links portable.
-- If the top menu bar does not show `STUNTBOOST`, check the loader's preferences for an error and confirm the selected game includes the runtime and plugins.
-- Go to `Edit` > `Prefernces` > `System`
-- Ensure the `Cycles Render Devices` is not set to `None`
-    - For AMD choose `HIP`
-    - For Nvidia try `Optix`
-        - If your GPU isn't listed below, choose `CUDA`
-    - Intel ARC GPUs use `oneAPI`
-    - If your GPU isn't listed under none of the options, you'll have to live with `None`
-        - This will bake on the CPU which is about 10x slower but it should still work.
-- Click small burger menu in bottom right -> `Save Preferences`
-- Setup is all done :)
+Next: [Test Export](./02-test-export.md) Export a example to the game.

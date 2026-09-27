@@ -1,13 +1,5 @@
 # SBE STUNTBOOST Exporter
 
-# Setup
-- Install the custom blender build
-  - Windows via precompiled
-  - Linux https://projects.blender.org/Tobiasked/blender/src/branch/bake_experiments_4_3
-- Install blender plugin loader (bpl) via blender_addons/loader_addon/README.md
-- Add Props and Room folder to blender asset library.
-  - !!! Make sure to set both libraries to link !!!
-
 
 # Usage
 

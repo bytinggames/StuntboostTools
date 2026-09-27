@@ -30,4 +30,4 @@
 - No manual naming is needed: if the name does not contain `#=Booster`, the exporter renames the object to `#=Booster(speed)` using the modifier's `CM/S` value.
 
 
-Next: [04 - Advanced](./04-advanced.md).
+Next: [04 - Advanced](./04-advanced.md)

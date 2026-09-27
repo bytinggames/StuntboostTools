@@ -7,6 +7,7 @@
 - `File` > `Save As` to save your own copy as `MyFirstLevel.blend` in the `levels` folder next to the blender executable [(Structure explained here)](./01-setup.md#folder-layout).
     - Don't save over the examples, changes might be gone when steam updates.
     - Always save to the `levels` so you can share them without relatives paths breaking.
+    - Don't copy paste or move level files around on your computer ! this will break relative links !
 
 ## Basic navigation
 - Now is a good time to familiarize yourself with the camera controls of blender to look around the scene.
@@ -38,4 +39,4 @@
     - They can play the level the same way by putting it in their `custom_maps` folder.
 
 
-Next: [Basics](./03-basics.md) — change the track and add gameplay objects.
+Next: [Basics](./03-basics.md) Change the track and add gameplay objects.

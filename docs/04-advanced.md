@@ -94,8 +94,6 @@
 ### Ordered checkpoints
 - TODO
 
-- Return to [03 - Basics](./03-basics.md) for placing gameplay objects, or [02 - Test Export](./02-test-export.md) for the export-and-play loop.
-
 
 ## Level metadata
 - Metadata is the title, author, preview and medal targets shown for your map.
@@ -124,3 +122,9 @@
 
 
 - Save the file and check the map's details in `Custom`. If the file is rejected, open `Map errors (...)` for the reason.
+
+## Additional Documentation
+[Internal docs for the object/collection name syntax](../blender_addons/bpl_auto_load/bake_v3/README.md#functionality)
+
+
+Next: [FAQ](./faq.md#not-implemented-yet) See what's missing or what needs documentation.
