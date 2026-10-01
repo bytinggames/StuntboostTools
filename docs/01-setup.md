@@ -1,5 +1,15 @@
 # 01 - Setup
 
+## Enabling Custom Levels in the game
+- Currently custom levels are hidden in the game to do some more testing.
+- Go to
+  - `%APPDATA%/STUNTBOOST/` (windows)
+  - `~/.config/STUNTBOST/` (linux)
+- Create a `settings.yaml` file or open the existing one
+    - On windows make sure you have file exensions enabled in the explorer so it's actually a `.yaml` file and not `.txt`
+- Add the line `CustomMaps: true` and save
+
+
 ## Getting Blender
 - We're using a modified blender version based on 4.3.2 (which is old I know)
     - The [FAQ](./faq.md) has a section about what it does.
@@ -29,7 +39,7 @@ Providing a prebuilt version isn't really as easy, so there are several options.
 ## Export Addon Installation
 
 
-- Fire up your locally sourced blender (Up to 5.2 should work)
+- Fire up your locally sourced blender (Up to 5.2 should work but is barely tested)
 - Go to `Edit` > `Prefernces` > `Add-ons`
 - Click Small down arrow in the top right
 - Click `Install from disk...`
