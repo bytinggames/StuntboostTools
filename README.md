@@ -6,16 +6,17 @@ This is work and progress. We'll work on improving the feature set and documenta
 
 ## Requirements
 - Some patience and/or familiarity with Blender
-    - Blender is not a easy level editor, but a giant 3D Modelling animation Tool!
+    - Blender is not a level editor, but a giant 3D Modelling animation Tool!
+        - It'll look intimidating, but we won't need most of the functionality.
     - There is a bit of a learning curve, but we're trying our best to make it straight forward.
         - There's also a million key binds
-        - Don't press random buttons or some hidden state will change and subtly alter behavior leaving you frustrated (I've been there)
+        - Don't press random buttons, some hidden state will change and subtly alter behavior, leaving you frustrated (I've been there)
 - A decent computer with a supported GPU
-    - This depends on how complex the levels are, and how close the original game look should be matched.
+    - This depends on how complex the levels are and how close the original game look should be matched.
 - The Full Game downloaded
-    - Bundles the required assets
-    - Bundles the exports scripts from this repository
-        - You do not need to download/clone anything from here unless you wont to develop the exporter!
+    - Contains the required assets
+    - Contains the exports scripts from this repository
+        - You do not need to download/clone anything from here unless you want to work on the exporter!
 
 
 ## Getting Started
