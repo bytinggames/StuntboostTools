@@ -1,5 +1,8 @@
 # 01 - Setup
 
+[Video Tutorial](https://www.youtube.com/watch?v=w9Z_Ey-b-Z8)
+
+
 ## Enabling Custom Levels in the game
 - Currently custom levels are hidden in the game to do some more testing.
 - If a `custom_maps` folder exists in the savegame folder, a `CUSTOM LEVELS` button will show up in the room selection.

@@ -1,5 +1,7 @@
 # 03 - Basics
 
+[Video Tutorial](https://www.youtube.com/watch?v=JDBNzV65H20)
+
 - Start with a level you can already export and play: [02 - Test export](./02-test-export.md).
 
 

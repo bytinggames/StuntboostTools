@@ -1,5 +1,7 @@
 # 02 - Export an example level
 
+[Video Tutorial](https://www.youtube.com/watch?v=w9Z_Ey-b-Z8)
+
 ## Open a copy
 - Top menu > `File` > `Open`.
     - Navigate to your game `STUNTBOOST/StuntboostTools/examples/`
