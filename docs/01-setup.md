@@ -2,12 +2,10 @@
 
 ## Enabling Custom Levels in the game
 - Currently custom levels are hidden in the game to do some more testing.
-- Go to
-  - `%APPDATA%/STUNTBOOST/` (windows)
-  - `~/.config/STUNTBOST/` (linux)
-- Create a `settings.yaml` file or open the existing one
-    - On windows make sure you have file exensions enabled in the explorer so it's actually a `.yaml` file and not `.txt`
-- Add the line `CustomMaps: true` and save
+- If a `custom_maps` folder exists in the savegame folder, a `CUSTOM LEVELS` button will show up in the room selection.
+  - `%APPDATA%/STUNTBOOST/custom_maps` (windows)
+  - `~/.config/STUNTBOST/custom_maps` (linux)
+- The exporter will create that folder, so you don't need to by hand.
 
 
 ## Getting Blender

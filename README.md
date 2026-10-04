@@ -4,6 +4,9 @@ This contains modding tools for the game [STUNBOOST](https://store.steampowered.
 
 This is work and progress. We'll work on improving the feature set and documentation if there's a real demand for custom levels.
 
+## There's NO online leaderboard and replays for custom maps currently!!!
+
+
 ## Requirements
 - Some patience and/or familiarity with Blender
     - Blender is not a level editor, but a giant 3D Modelling animation Tool!
