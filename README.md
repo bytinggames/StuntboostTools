@@ -1,6 +1,6 @@
 # STUNTBOOST Tools & Friends
 
-This contains modding tools for the game [STUNBOOST](https://store.steampowered.com/app/2999500/STUNTBOOST/) as well as documentation and the source code to the blender exporter.
+This contains the level exporter for the game [STUNTBOOST](https://store.steampowered.com/app/2999500/STUNTBOOST/) as well as documentation and the source code to the blender exporter.
 
 This is work and progress. We'll work on improving the feature set and documentation if there's a real demand for custom levels.
 
