@@ -46,6 +46,21 @@ def get_texture_folder(level_name: str) -> str:
         return get_export_folder(level_name)
     return os.path.join(stuntboost_bpl_runtime.get_game_path(), "SE/Content/Models/Resources", level_name + ".export")
 
+def is_custom_level_blend(blend_path: str) -> bool:
+    """Whether `blend_path` is a custom map/inside the levels folder beside the Blender exe or in shipped examples"""
+    if not blend_path:
+        return False
+    blend = pathlib.Path(os.path.normcase(os.path.realpath(blend_path)))
+    folders = [
+        os.path.join(os.path.dirname(bpy.app.binary_path), "levels"),
+        os.path.join(stuntboost_bpl_runtime.get_game_path(), "StuntboostTools", "examples"),
+    ]
+    for folder in folders:
+        folder = os.path.normcase(os.path.realpath(folder))
+        if blend.is_relative_to(folder):
+            return True
+    return False
+
 _props_folder = (
     os.path.join(stuntboost_bpl_runtime.get_game_path(), "StuntboostTools/assets/Models/Props")
     if not stuntboost_bpl_runtime.is_repo()

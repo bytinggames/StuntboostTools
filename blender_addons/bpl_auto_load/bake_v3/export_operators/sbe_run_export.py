@@ -2,6 +2,8 @@
 
 import json
 import os
+import shutil
+import typing
 
 # pylint: disable=import-error
 import bpy
@@ -9,10 +11,13 @@ import bpy
 
 from bake_v3.sbe_operator_ids import SBE_OP_EXPORT
 from bake_v3.sbe_logger import SBE_Logger
-from bake_v3.sbe_util import get_filename_without_extension
+from bake_v3.sbe_util import get_filename_without_extension, get_original_blend_path
 from bake_v3.sbe_export_operator_base import SBE_ExportOperatorBase, SBE_Operator_Start_Result
 from bake_v3.sbe_collection_util import get_all_bake_collections, get_bake_collections
-from bake_v3.sbe_paths import use_custom_map_export, ensure_folder, get_export_folder
+from bake_v3.sbe_paths import use_custom_map_export, ensure_folder, get_export_folder, is_custom_level_blend
+from bake_v3.properties.sbe_level_props import (
+    SBE_LevelProperties, MANAGED_KEYS, PREVIEW_SUFFIX, read_sidecar
+)
 
 class SBE_ExportLevel(SBE_ExportOperatorBase):
     """Export the level to .gltf"""
@@ -86,16 +91,32 @@ class SBE_ExportLevel(SBE_ExportOperatorBase):
 
         filename = os.path.join(export_folder, blend_name + "_.json")
         try:
-            metadata = {}
-            if os.path.exists(filename):
-                with open(filename, "r", encoding="utf-8") as f:
-                    metadata = json.load(f)
-                if not isinstance(metadata, dict):
-                    raise ValueError("Level sidecar must contain a JSON object")
+            metadata = read_sidecar(filename)
             metadata["modelCount"] = len(all_bake_collections)
+            level_props: SBE_LevelProperties = SBE_LevelProperties.get()
+            if custom_map_export and is_custom_level_blend(get_original_blend_path()):
+                for key in MANAGED_KEYS:
+                    metadata.pop(key, None)
+                metadata.update(level_props.to_metadata(copy_preview(level_props, export_folder, blend_name)))
             with open(filename, "w", encoding="utf-8") as f:
                 json.dump(metadata, f, ensure_ascii=False)
         except Exception as e:
             SBE_Logger.print(f"Failed to open {filename} for export")
             SBE_Logger.print(str(e))
         # TODO check if the written file count matches what's actually on disk
+
+
+def copy_preview(level_props: SBE_LevelProperties, export_folder: str, blend_name: str) -> typing.Optional[str]:
+    """Copies the preview into the map folder and returns its file name, None without a usable preview."""
+    if not level_props.preview.strip():
+        return None
+    # "//" paths are relative to the original blend, not the .export blend we're running in
+    source = bpy.path.abspath(level_props.preview, start=os.path.dirname(get_original_blend_path()))
+    if not source.lower().endswith(".png") or not os.path.isfile(source):
+        SBE_Logger.print(f"Skipping preview, not an existing .png file: {source}")
+        return None
+    target_name = blend_name + PREVIEW_SUFFIX
+    target = os.path.join(export_folder, target_name)
+    if os.path.abspath(source) != os.path.abspath(target):
+        shutil.copyfile(source, target)
+    return target_name

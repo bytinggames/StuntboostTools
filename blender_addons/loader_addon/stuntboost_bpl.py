@@ -19,11 +19,41 @@ bl_info = {
 _runtime = None
 _load_error = ""
 _RUNTIME_FILE = Path("blender_addons") / "stuntboost_bpl_runtime.py"
+_write_warning = ()
 
 
 def has_game_tools(path):
     tools = path / "StuntboostTools" / "blender_addons"
     return (tools / _RUNTIME_FILE.name).is_file() and (tools / "bpl_auto_load").is_dir()
+
+
+def check_blender_folder_writable():
+    """Return warning lines if files cannot be created beside the Blender binary."""
+    root = Path(bpy.app.binary_path).parent
+    try:
+        with tempfile.TemporaryFile(prefix=".stuntboost-write-test-", dir=root):
+            pass
+    except OSError as exc:
+        return (
+            f"Blender installation folder is not writable: {root} ({exc.strerror or exc}).",
+            "Game linking, levels and the AssetLibrary folder need write access.",
+            "Use a portable Blender in a user-writable folder.",
+        )
+    return ()
+
+
+def show_write_warning():
+    window_manager = bpy.context.window_manager
+    if window_manager is None or not window_manager.windows:
+        return None
+
+    def draw(menu, _context):
+        for line in _write_warning:
+            menu.layout.label(text=line)
+
+    with bpy.context.temp_override(window=window_manager.windows[0]):
+        window_manager.popup_menu(draw, title="STUNTBOOST Loader", icon='ERROR')
+    return None
 
 
 def find_game_path():
@@ -187,6 +217,8 @@ class BPL_Preferences(bpy.types.AddonPreferences):
 
     def draw(self, context):
         layout = self.layout
+        for index, line in enumerate(_write_warning):
+            layout.label(text=line, icon='ERROR' if index == 0 else 'BLANK1')
         if _load_error:
             layout.label(text=_load_error, icon='ERROR')
         layout.label(text=f"Game: {(Path(bpy.app.binary_path).parent / 'game').resolve()}")
@@ -204,17 +236,26 @@ class BPL_Preferences(bpy.types.AddonPreferences):
 
 
 def register():
+    global _write_warning
     bpy.utils.register_class(BPL_SetGamePath)
     bpy.utils.register_class(BPL_Preferences)
+    _write_warning = check_blender_folder_writable()
+    if _write_warning:
+        print("STUNTBOOST: " + " ".join(_write_warning))
+        # Windows are not available during startup registration.
+        bpy.app.timers.register(show_write_warning, first_interval=1.0)
     load_runtime()
 
 
 def unregister():
-    global _runtime, _load_error
+    global _runtime, _load_error, _write_warning
+    if bpy.app.timers.is_registered(show_write_warning):
+        bpy.app.timers.unregister(show_write_warning)
     if _runtime is not None:
         _runtime.unregister()
         sys.modules.pop(_runtime.__name__, None)
         _runtime = None
     _load_error = ""
+    _write_warning = ()
     bpy.utils.unregister_class(BPL_Preferences)
     bpy.utils.unregister_class(BPL_SetGamePath)

@@ -96,16 +96,27 @@
 
 
 ## Level metadata
-- Metadata is the title, author, preview and medal targets shown for your map.
-- Open the exported `<level-name>_.json` in a text editor. It sits beside the `.gltf` files inside your map folder.
-- Add whichever of these optional fields you need:
+- Metadata is the title, author, preview, medal targets and level settings (vehicle, abilities, fog, shadows, ...) for your map.
+- Set it in Blender: `Properties > Scene > STUNTBOOST Custom Map`. Every export writes all of it into `<level-name>_.json`, which sits beside the `.gltf` files inside your map folder.
+    - The panel is hidden for files outside of the `Levels` folder!
+    - Click the refresh button next to the empty `ID` to generate one. Do this once per map.
+    - The preview PNG is copied into the map folder on export, keep the original around.
+- json fields and their meaning:
     - `id`: a UUID, a unique identifier for your map. Generate one once with a UUID generator and keep it for later versions. Use a new one for a different map. Without it, moving or renaming the map folder changes the map ID.
     - `version`: a integer. Increase it when you want a new record version.
     - `name`: the displayed title. Falls back to filename.
     - `author`: your displayed name. Falls back to `Unknown`.
-    - `preview`: the path to a PNG inside the map folder shown in the level selection.
+    - `preview`: the path to a PNG inside the map folder shown in the level selection. Default: no preview.
     - `medalTimesSeconds`: medal targets in seconds, using `silver`, `gold`, `diamond`, `obsidian` and `developer`.
         - Use positive numbers, with `silver >= gold >= diamond >= obsidian >= developer`.
+    - Level settings:
+        - `spawn`: name of the spawn point to start at. Default `start`.
+        - `boardType`: `Normal`, `Longboard`, `Car`, `Scooter` or `CarScooter`. Default `Normal`.
+        - `maxAbility`: the abilities the player has: `None`, `Jump`, `Crouch`, `JumpAndCrouch`, `Grind` or `AirMovement`. Default `Grind`.
+        - `tiltCamToGround`: an integer; above 0 tilts the camera with the ground. Default `0`.
+        - `shadowColor`, `fogColor`, `godRayColor`: `"#RRGGBB"` or `[r, g, b]` / `[r, g, b, a]` with values from 0.0 to 1.0.
+        - `ambientLightInShadow`, `fogStart`, `fogLength`, `godRayIntensity`: numbers.
+        - Setting `spawn`, `boardType`, `maxAbility` or `tiltCamToGround` changes gameplay, so it starts a new record version. The purely visual settings don't.
 - Example:
 ```json
 {
@@ -116,7 +127,9 @@
   "medalTimesSeconds": {
     "silver": 60, "gold": 45, "diamond": 35,
     "obsidian": 30, "developer": 28
-  }
+  },
+  "boardType": "Scooter",
+  "fogColor": [0.8, 0.8, 0.6, 1.0]
 }
 ```
 

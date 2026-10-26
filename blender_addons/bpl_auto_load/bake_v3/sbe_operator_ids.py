@@ -30,6 +30,7 @@ SBE_OP_SAVE_LOGS = "wm.sbe_save_logs"
 # others
 SBE_OP_TOGGLE_ORIGINAL = "wm.sbe_load_original"
 SBE_OP_PREVIEW_POST_PROCESS="wm.sbe_preview_post_process"
+SBE_OP_GENERATE_LEVEL_ID = "wm.sbe_generate_level_id"
 
 # Bake step sequence
 SBE_OP_BUILD_LEVEL = "scene.sbe_build_level"

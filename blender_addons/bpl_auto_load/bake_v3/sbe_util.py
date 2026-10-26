@@ -154,6 +154,10 @@ def is_export_file() -> bool:
     file_name = bpy.path.display_name_from_filepath(bpy.data.filepath)
     return file_name.lower().endswith(".export")
 
+def get_original_blend_path() -> str:
+    """Path of the blend the bake started from, also when running in its .export copy"""
+    return retrieve_persistent(SBE_GLOBAL_ORIGINAL_BLEND_PATH) if is_export_file() else bpy.data.filepath
+
 def export_blend_path() -> str:
     if is_export_file():
         return bpy.data.filepath

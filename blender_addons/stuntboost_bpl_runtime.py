@@ -33,38 +33,40 @@ class ModuleManager:
     """Holds the module type and the "loader classes" with the "bpl_load" functions or "bpl_auto_load" """
     interval_seconds: float = 10
     """Interval to check for file changes"""
-    folder: str = ""
-    """Folder to watch"""
+    folders: list[str] = []
+    """Folders to watch, loaded in order"""
     revert_on_reload = False
     """Whether to revert the current file on hot reload"""
-    def __init__(self, folder: str, interval_seconds: float, module_blacklist: str):
+    def __init__(self, folders: list[str], interval_seconds: float, module_blacklist: str):
         self.interval_seconds = interval_seconds
-        self.folder = folder
+        self.folders = folders
         self.blacklisted_files = {name.strip() for name in module_blacklist.split(",") if name.strip()}
         self._check_timer = self.__check
 
     def __get_files(self) -> list[str]:
-        pattern_ignore = os.path.join(self.folder, "**", ".bplignore")
-        result_ignore = []
-        for i in glob.glob(pattern_ignore, recursive=True):
-            result_ignore.append(os.path.dirname(i))
-
-        pattern = os.path.join(self.folder, "**", "*.py")
         result = []
-        for i in glob.glob(pattern, recursive=True):
-            if os.path.basename(i) in self.blacklisted_files:
-                continue
-            in_ignore = False
-            for j in result_ignore:
-                if i.find(j) != -1:
-                    in_ignore = True
-                    break
-            if not in_ignore:
-                result.append(i)
+        for folder in self.folders:
+            pattern_ignore = os.path.join(folder, "**", ".bplignore")
+            result_ignore = []
+            for i in glob.glob(pattern_ignore, recursive=True):
+                result_ignore.append(os.path.dirname(i))
+
+            pattern = os.path.join(folder, "**", "*.py")
+            for i in glob.glob(pattern, recursive=True):
+                if os.path.basename(i) in self.blacklisted_files:
+                    continue
+                in_ignore = False
+                for j in result_ignore:
+                    if i.find(j) != -1:
+                        in_ignore = True
+                        break
+                if not in_ignore:
+                    result.append(i)
         return result
 
     def __load_module(self, full_module_path: str) -> int:
         loaded_count = 0
+        module = None
         try:
             path = pathlib.Path(full_module_path)
             if not path.is_file:
@@ -234,7 +236,16 @@ def start_bpl() -> None:
     print("BPL Auto Load folder: " + auto_load_path)
     if not os.path.isdir(auto_load_path):
         raise FileNotFoundError(f"BPL plugin folder not found: {auto_load_path}")
-    BPL_MANAGER = ModuleManager(auto_load_path, 1, preferences.module_blacklist)
+    folders = [auto_load_path]
+    scripts_library_path = str(pathlib.Path(bpy.app.binary_path).parent / "ScriptsLibrary")
+    try:
+        os.makedirs(scripts_library_path, exist_ok=True)
+        folders.append(scripts_library_path)
+        print("BPL Scripts Library folder: " + scripts_library_path)
+    except OSError as ex:
+        # The loader warns about a read-only Blender folder; shipped tools still load.
+        print(f"BPL Skipping Scripts Library folder {scripts_library_path}: {ex}")
+    BPL_MANAGER = ModuleManager(folders, 1, preferences.module_blacklist)
     BPL_MANAGER.revert_on_reload = preferences.revert_on_reload
     BPL_MANAGER.start(preferences.watch_python_files)
 

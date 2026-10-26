@@ -8,6 +8,7 @@ from bake_v3.properties.sbe_collection_props import SBE_CollectionProperties
 from bake_v3.properties.sbe_modifier_props import SBE_ModifierProperties
 from bake_v3.properties.sbe_object_props import SBE_ObjectProperties
 from bake_v3.properties.sbe_blend_props import SBE_BlendProperties
+from bake_v3.properties.sbe_level_props import SBE_LevelProperties
 
 
 class SBE_RegisterProperties():
@@ -18,6 +19,7 @@ class SBE_RegisterProperties():
         SBE_ModifierProperties.register_property()
         SBE_ObjectProperties.register_property()
         SBE_BlendProperties.register_property()
+        SBE_LevelProperties.register_property()
 
     @staticmethod
     def bpl_unload() -> None:
@@ -26,3 +28,4 @@ class SBE_RegisterProperties():
         SBE_ModifierProperties.unregister_property()
         SBE_ObjectProperties.unregister_property()
         SBE_BlendProperties.unregister_property()
+        SBE_LevelProperties.unregister_property()
