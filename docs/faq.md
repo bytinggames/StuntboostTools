@@ -1,11 +1,8 @@
 # FAQ
 
 ## Not implemented yet
-- Changing the vehicle type
 - Wheels
 - Eyes/Doors
-- Change Godrays
-- Change Fog
 
 
 ## Not yet Documented features
