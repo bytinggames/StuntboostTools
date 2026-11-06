@@ -8,6 +8,7 @@ Since this is new, old levels without the data migrate once and load the data fr
 import json
 import os
 import typing
+import uuid
 
 # pylint: disable=import-error
 import bpy
@@ -16,6 +17,7 @@ from bpy.app.handlers import persistent
 
 from bake_v3.sbe_util import get_persistent_data_block, get_filename_without_extension, SBE_PERSISTENT_DATA_BLOCK
 from bake_v3.sbe_paths import get_export_folder, use_custom_map_export, is_custom_level_blend
+from bake_v3.sbe_logger import SBE_Logger
 
 BOARD_TYPES = ['Normal', 'Longboard', 'Car', 'Scooter', 'CarScooter']
 """Names of SE.BoardType"""
@@ -43,7 +45,7 @@ SETTINGS: list[tuple[str, str, str]] = [
 """(sidecar key, property name, kind) of the single value fields"""
 
 GAMEPLAY_PROPS = ["spawn", "board_type", "max_ability", "tilt_cam_to_ground"]
-"""Changing these starts a new record version in game"""
+"""Affect gameplay, changing them keeps the records unless Version is bumped"""
 
 MANAGED_KEYS = ["id", "name", "author", "preview", "medalTimesSeconds"] + [key for key, _, _ in SETTINGS]
 """Sidecar keys owned by the properties. Other keys in an existing sidecar are preserved."""
@@ -88,10 +90,26 @@ def migrate_sidecar() -> None:
         try:
             metadata = read_sidecar(path)
         except (OSError, ValueError) as e:
-            print(f"STUNTBOOST: could not migrate level sidecar {path}: {e}")
+            SBE_Logger.error(f"Could not migrate level sidecar {path}: {e}")
             return
         props.load_metadata(metadata, get_sidecar_folder())
     props.sidecar_migrated = True
+
+
+def new_map_id() -> str:
+    return str(uuid.uuid4())
+
+
+def ensure_map_id() -> None:
+    """Generates the map ID of a custom level blend if missing"""
+    if bpy.app.background or not use_custom_map_export() or not is_custom_level_blend(bpy.data.filepath):
+        return
+    migrate_sidecar() # adopt the ID of an existing sidecar instead of replacing it
+    props: SBE_LevelProperties = SBE_LevelProperties.get()
+    if props.map_id.strip():
+        return
+    props.map_id = new_map_id()
+    SBE_Logger.print(f"Generated map ID {props.map_id}")
 
 
 @persistent
@@ -135,7 +153,7 @@ class SBE_LevelProperties(bpy.types.PropertyGroup):
 
     map_id: bpy.props.StringProperty(
         name="ID", update=_on_edit,
-        description="UUID identifying the map. Generate it once and keep it, so records survive renames etc. Empty: falls back to map folder path")
+        description="UUID identifying the map locally, keep it so local records survive renames etc. Not used online! Workshop maps are identified by their item. Empty: generated on the next export")
     map_name: bpy.props.StringProperty(
         name="Name", description="Displayed title. Empty: the file name", update=_on_edit)
     author: bpy.props.StringProperty(
@@ -146,7 +164,7 @@ class SBE_LevelProperties(bpy.types.PropertyGroup):
         description="PNG shown in the level selection. Copied into the map folder on export. Empty: no preview")
 
     version: bpy.props.IntProperty(
-        name="Version", description="Increase to start a new record version", min=0, default=1, update=_on_edit)
+        name="Version", description="Increase to start a new record version and an empty leaderboard.", min=0, default=1, update=_on_edit)
 
     silver: _medal("Silver", 60.0, _MEDAL)
     gold: _medal("Gold", 45.0, _MEDAL)
@@ -238,7 +256,7 @@ class SBE_LevelProperties(bpy.types.PropertyGroup):
                 raise ValueError()
             setattr(self, prop, value)
         except (ValueError, TypeError):
-            print(f"STUNTBOOST: skipping malformed sidecar value for {prop}: {value!r}")
+            SBE_Logger.print(f"Skipping malformed sidecar value for {prop}: {value!r}")
 
     @staticmethod
     def register_property() -> None:

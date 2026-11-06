@@ -26,6 +26,7 @@ from bake_v3.sbe_logger import SBE_Logger
 from bake_v3.sbe_util import execute_by_idname, ensure_saved_as_bake_blend
 from bake_v3.sbe_temp_storage import store_temp
 from bake_v3.properties.sbe_blend_props import SBE_BlendProperties
+from bake_v3.properties.sbe_level_props import ensure_map_id
 from bake_v3.sbe_sound import error_sound
 
 def ensure_system_console():
@@ -111,6 +112,7 @@ class SBE_FullBuildScene(bpy.types.Operator):
     bpl_auto_load = True
 
     def execute(self, _context: bpy.types.Context):
+        ensure_map_id()
         ensure_system_console()
         if defer_call(self):
             return {"FINISHED"}
@@ -137,6 +139,7 @@ class SBE_FullBuildLevel(bpy.types.Operator):
     bpl_auto_load = True
 
     def execute(self, context: bpy.types.Context):
+        ensure_map_id()
         ensure_system_console()
         if defer_call(self):
             return {"FINISHED"}
@@ -186,6 +189,7 @@ class SBE_FullInspectLevel(bpy.types.Operator):
     bpl_auto_load = True
 
     def execute(self, context: bpy.types.Context):
+        ensure_map_id()
         if defer_call(self):
             return {"FINISHED"}
 

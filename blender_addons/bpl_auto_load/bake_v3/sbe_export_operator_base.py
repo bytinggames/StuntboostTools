@@ -12,6 +12,7 @@ from bake_v3.sbe_util import (
     retrieve_persistent, store_persistent, ensure_saved_as_bake_blend
 )
 from bake_v3.sbe_logger import SBE_Logger
+from bake_v3.properties.sbe_level_props import ensure_map_id
 
 @dataclasses.dataclass
 class SBE_Operator_Start_Result():
@@ -27,6 +28,7 @@ class SBE_Operator_Start():
     operator_id: str
     def __init__(self, operator: bpy.types.Operator, context: bpy.types.Context):
         self.operator_id = type(operator).bl_idname
+        ensure_map_id()
         ensure_saved_as_bake_blend()
         # make sure there's no selection or other implicit blender state
         if context.active_object and context.active_object.mode != 'OBJECT':

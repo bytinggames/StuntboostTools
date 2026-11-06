@@ -99,11 +99,12 @@
 - Metadata is the title, author, preview, medal targets and level settings (vehicle, abilities, fog, shadows, ...) for your map.
 - Set it in Blender: `Properties > Scene > STUNTBOOST Custom Map`. Every export writes all of it into `<level-name>_.json`, which sits beside the `.gltf` files inside your map folder.
     - The panel is hidden for files outside of the `Levels` folder!
-    - Click the refresh button next to the empty `ID` to generate one. Do this once per map.
+    - The `ID` is generated and saved into your blend on the first export if it's empty. The refresh button next to an empty `ID` generates one right away.
     - The preview PNG is copied into the map folder on export, keep the original around.
 - json fields and their meaning:
-    - `id`: a UUID, a unique identifier for your map. Generate one once with a UUID generator and keep it for later versions. Use a new one for a different map. Without it, moving or renaming the map folder changes the map ID.
-    - `version`: a integer. Increase it when you want a new record version.
+    - `id`: a UUID identifying your map on your own PC. The exporter generates it once and keeps it for later versions, so your local records survive renaming or moving the map folder. Use a new one for a different map, so don't copy the blend of an existing map without clearing it. Without it, moving or renaming the map folder changes the map ID.
+        - It's only relevant locally! Online leaderboards and replays use the Workshop item instead. Publishing creates the item and stores its number as `workshopId` in the json, so later uploads update the same item. Installed Workshop maps ignore `id`, and your local copy stays a separate, offline map.
+    - `version`: an integer, default `1`. Records and the online leaderboard are kept per version, and only this field starts a new one. Changing geometry, objects, `spawn`, `boardType`, `maxAbility` or `tiltCamToGround` keeps the existing records. Increase it after a change that makes old times unfair, so the leaderboard starts empty. Old replays may not play correctly on a changed map.
     - `name`: the displayed title. Falls back to filename.
     - `author`: your displayed name. Falls back to `Unknown`.
     - `preview`: the path to a PNG inside the map folder shown in the level selection. Default: no preview.
@@ -116,7 +117,6 @@
         - `tiltCamToGround`: an integer; above 0 tilts the camera with the ground. Default `0`.
         - `shadowColor`, `fogColor`, `godRayColor`: `"#RRGGBB"` or `[r, g, b]` / `[r, g, b, a]` with values from 0.0 to 1.0.
         - `ambientLightInShadow`, `fogStart`, `fogLength`, `godRayIntensity`: numbers.
-        - Setting `spawn`, `boardType`, `maxAbility` or `tiltCamToGround` changes gameplay, so it starts a new record version. The purely visual settings don't.
 - Example:
 ```json
 {

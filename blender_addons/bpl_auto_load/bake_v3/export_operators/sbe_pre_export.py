@@ -32,6 +32,9 @@ from bake_v3.sbe_custom_properties import (
     SBE_VERTEX_SHIFT_ATTRIBUTE, SBE_EXPORT_VERTEX_SHIFT_ATTRIBUTE
 )
 from bake_v3.properties.sbe_object_props import SBE_ObjectProperties
+from bake_v3.export_operators.sbe_make_real import (
+    SBE_CUSTOM_ID_PROP, SBE_PARENT_COLLECTION_PROP, SBE_INSTANCE_SOURCE_PROP
+)
 from bake_v3.sbe_mesh_util import ensure_unique_data, ensure_outside_normals
 
 def create_sun(context: bpy.types.Context,
@@ -102,7 +105,9 @@ def remove_attributes(obj: bpy.types.Object) -> None:
     custom_props = [
         SBE_IMG_BAKE_COMBINED_PROP, SBE_IMG_BAKE_AO_PROP, SBE_IMG_BAKE_DIRECT_PROP,
         SBE_IMG_BAKE_COMBINED_PROCESSED_PROP, SBE_IMG_BAKE_DIRECT_PROCESSED_PROP,
-        SBE_OBJECT_BAKE_TARGET_PROP, SBE_OBJECT_BAKE_SOURCE_PROP, SBE_VERTEX_SPLIT_ID
+        SBE_OBJECT_BAKE_TARGET_PROP, SBE_OBJECT_BAKE_SOURCE_PROP, SBE_VERTEX_SPLIT_ID,
+        # make real bookkeeping, numbered nondeterministically, would end up in the gltf extras
+        SBE_CUSTOM_ID_PROP, SBE_PARENT_COLLECTION_PROP, SBE_INSTANCE_SOURCE_PROP,
     ]
     for i in custom_props:
         if i in obj:

@@ -95,11 +95,13 @@ class SBE_ExportLevel(SBE_ExportOperatorBase):
             metadata["modelCount"] = len(all_bake_collections)
             level_props: SBE_LevelProperties = SBE_LevelProperties.get()
             if custom_map_export and is_custom_level_blend(get_original_blend_path()):
+                if not level_props.map_id.strip():
+                    SBE_Logger.print("!!!!!  Warning: no map ID! Generate one in the scene -> STUNTBOOST UI !!!!!")
                 for key in MANAGED_KEYS:
                     metadata.pop(key, None)
                 metadata.update(level_props.to_metadata(copy_preview(level_props, export_folder, blend_name)))
             with open(filename, "w", encoding="utf-8") as f:
-                json.dump(metadata, f, ensure_ascii=False)
+                json.dump(metadata, f, ensure_ascii=False, indent=4)
         except Exception as e:
             SBE_Logger.print(f"Failed to open {filename} for export")
             SBE_Logger.print(str(e))

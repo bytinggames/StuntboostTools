@@ -4,7 +4,8 @@ This contains the level exporter for the game [STUNTBOOST](https://store.steampo
 
 This is work and progress. We'll work on improving the feature set and documentation if there's a real demand for custom levels.
 
-## There's NO online leaderboard and replays for custom maps currently!!!
+
+# [CLICK HERE FOR VIDEO TUTORIAL (but pls read the requirements first)](https://www.youtube.com/watch?v=w9Z_Ey-b-Z8)
 
 
 ## Requirements

@@ -51,7 +51,7 @@ class SBE_LevelPropertiesPanel(bpy.types.Panel):
             box.label(text=error, icon='ERROR')
 
         box = layout.box()
-        box.label(text="Gameplay (changes start a new record version)")
+        box.label(text="Gameplay (bump Version to clear the records)")
         box.prop(props, "version")
         for prop in GAMEPLAY_PROPS:
             box.prop(props, prop)
